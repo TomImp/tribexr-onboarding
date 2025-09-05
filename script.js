@@ -292,9 +292,13 @@ function populateLessonsTable() {
     const tbody = document.getElementById('lessons-tbody');
     let tableHTML = '';
     
+    // Get saved lesson ratings
+    const savedRatings = localStorage.getItem('lessonRatings');
+    const lessonRatings = savedRatings ? JSON.parse(savedRatings) : {};
+    
     lessons.forEach((lesson, index) => {
         const difficultyDots = createDifficultyIndicator(lesson.difficulty);
-        const ratingStars = createRatingStars(lesson.rating);
+        const userRating = createUserRating(lessonRatings[index]);
         
         tableHTML += `
             <tr>
@@ -303,7 +307,7 @@ function populateLessonsTable() {
                 <td>${difficultyDots}</td>
                 <td>${lesson.equipment}</td>
                 <td>${lesson.genre}</td>
-                <td><div class="rating">${ratingStars}</div></td>
+                <td><div class="rating">${userRating}</div></td>
                 <td><button class="btn-small" onclick="openLesson(${index})">Start</button></td>
             </tr>
         `;
@@ -324,12 +328,18 @@ function createDifficultyIndicator(difficulty) {
     return `<div class="difficulty-indicator">${dots}</div>`;
 }
 
-function createRatingStars(rating) {
-    let stars = '';
-    for (let i = 1; i <= 5; i++) {
-        stars += `<span class="star">${i <= rating ? '★' : '☆'}</span>`;
+function createUserRating(rating) {
+    if (!rating) {
+        return '<span class="no-rating">Not rated</span>';
     }
-    return stars;
+    
+    if (rating === 'up') {
+        return '<span class="user-rating thumbs-up">👍 Helpful</span>';
+    } else if (rating === 'down') {
+        return '<span class="user-rating thumbs-down">👎 Needs work</span>';
+    }
+    
+    return '<span class="no-rating">Not rated</span>';
 }
 
 function filterLessons(filter) {
@@ -357,11 +367,15 @@ function filterLessons(filter) {
         });
     }
     
+    // Get saved lesson ratings  
+    const savedRatings = localStorage.getItem('lessonRatings');
+    const lessonRatings = savedRatings ? JSON.parse(savedRatings) : {};
+    
     let tableHTML = '';
     filteredLessons.forEach(lesson => {
         const originalIndex = lessons.indexOf(lesson);
         const difficultyDots = createDifficultyIndicator(lesson.difficulty);
-        const ratingStars = createRatingStars(lesson.rating);
+        const userRating = createUserRating(lessonRatings[originalIndex]);
         
         tableHTML += `
             <tr>
@@ -370,7 +384,7 @@ function filterLessons(filter) {
                 <td>${difficultyDots}</td>
                 <td>${lesson.equipment}</td>
                 <td>${lesson.genre}</td>
-                <td><div class="rating">${ratingStars}</div></td>
+                <td><div class="rating">${userRating}</div></td>
                 <td><button class="btn-small" onclick="openLesson(${originalIndex})">Start</button></td>
             </tr>
         `;

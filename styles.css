@@ -567,6 +567,29 @@ tr:hover {
     color: var(--accent-primary);
 }
 
+/* User rating styles in lesson table */
+.user-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.user-rating.thumbs-up {
+    color: var(--success);
+}
+
+.user-rating.thumbs-down {
+    color: #f44336;
+}
+
+.no-rating {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-style: italic;
+}
+
 @media (max-width: 768px) {
     .options-grid {
         grid-template-columns: 1fr;
