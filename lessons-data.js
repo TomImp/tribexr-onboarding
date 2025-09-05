@@ -7,7 +7,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=_NzVmtbPOrM"
+        link: "https://www.youtube.com/watch?v=sTSA_sWGM44"
     },
     {
         name: "Counting 4/4 Time in House Music",
@@ -16,7 +16,7 @@ const lessons = [
         equipment: "Any",
         genre: "House",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=3r8WbTBLlgo"
+        link: "https://www.youtube.com/watch?v=lDK9QqIzhwk"
     },
     {
         name: "Understanding BPM in EDM",
@@ -25,7 +25,7 @@ const lessons = [
         equipment: "Any",
         genre: "EDM",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=H3kKRF8S1HM"
+        link: "https://www.youtube.com/watch?v=Wga5A6R9BJg"
     },
     {
         name: "Techno Rhythm Patterns",
@@ -45,7 +45,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "House",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=T7QCSJJbv1g"
+        link: "https://www.youtube.com/watch?v=fJ9rUzIMcZQ"
     },
     {
         name: "Manual Beat Matching on CDJ-2000",

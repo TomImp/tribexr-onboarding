@@ -322,7 +322,18 @@
             
             if (!videoId) {
                 console.error('Could not extract video ID from:', lesson.link);
-                document.getElementById('lesson-title').textContent = `Error: Invalid video link - ${lesson.name}`;
+                // Show a placeholder message for missing videos
+                document.getElementById('video-frame').style.display = 'none';
+                document.getElementById('lesson-title').textContent = lesson.name;
+                
+                // Add a message about missing video
+                const videoContainer = document.querySelector('.video-container');
+                videoContainer.innerHTML = `
+                    <div style="background: #333; padding: 40px; text-align: center; border-radius: 12px;">
+                        <h3 style="color: #fff; margin-bottom: 16px;">📹 Video Coming Soon</h3>
+                        <p style="color: #aaa; margin: 0;">This lesson video is currently being prepared.<br>Please check back soon!</p>
+                    </div>
+                `;
                 return;
             }
             
