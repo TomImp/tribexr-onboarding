@@ -1,3 +1,4 @@
+console.log('Script.js loading...');
 let currentStep = 0;
 const steps = ['welcome', 'skill', 'genre', 'goals', 'frequency', 'lessons'];
 let userProfile = {
@@ -51,10 +52,13 @@ function nextStep() {
         document.getElementById(`step-${steps[currentStep]}`).classList.add('active');
         
         if (steps[currentStep] === 'lessons') {
+            console.log('Reached lessons step, completing onboarding...');
             userProfile.completedOnboarding = true;
             generatePersonalizedPath();
             populateLessonsTable();
             updateProfileSummary();
+            console.log('About to show main navigation...');
+            showMainNavigation();
             saveUserProfile();
         }
     }
@@ -298,7 +302,7 @@ function populateLessonsTable() {
     
     lessons.forEach((lesson, index) => {
         const difficultyDots = createDifficultyIndicator(lesson.difficulty);
-        const userRating = createUserRating(lessonRatings[index]);
+        const userRating = createUserRating(lessonRatings[index], lessonRatings);
         
         tableHTML += `
             <tr>
@@ -328,15 +332,20 @@ function createDifficultyIndicator(difficulty) {
     return `<div class="difficulty-indicator">${dots}</div>`;
 }
 
-function createUserRating(rating) {
+function createUserRating(rating, lessonRatings) {
     if (!rating) {
         return '<span class="no-rating">Not rated</span>';
     }
     
+    // Calculate overall percentage
+    const allRatings = Object.values(lessonRatings);
+    const upRatings = allRatings.filter(r => r === 'up').length;
+    const percentage = allRatings.length > 0 ? Math.round((upRatings / allRatings.length) * 100) : 0;
+    
     if (rating === 'up') {
-        return '<span class="user-rating thumbs-up">👍 Helpful</span>';
+        return `<span class="user-rating thumbs-up">👍 ${percentage}%</span>`;
     } else if (rating === 'down') {
-        return '<span class="user-rating thumbs-down">👎 Needs work</span>';
+        return `<span class="user-rating thumbs-down">👎 ${percentage}%</span>`;
     }
     
     return '<span class="no-rating">Not rated</span>';
@@ -375,7 +384,7 @@ function filterLessons(filter) {
     filteredLessons.forEach(lesson => {
         const originalIndex = lessons.indexOf(lesson);
         const difficultyDots = createDifficultyIndicator(lesson.difficulty);
-        const userRating = createUserRating(lessonRatings[originalIndex]);
+        const userRating = createUserRating(lessonRatings[originalIndex], lessonRatings);
         
         tableHTML += `
             <tr>
@@ -443,6 +452,9 @@ function initializeApp() {
         
         // Update profile summary
         updateProfileSummary();
+        
+        // Show main navigation
+        showMainNavigation();
         
         // Clean up URL
         if (skipToLessons) {
@@ -562,5 +574,46 @@ function resetProfile() {
     alert('Profile reset! You can now start fresh.');
 }
 
+// Main navigation functions
+function showMainNavigation() {
+    console.log('showMainNavigation called');
+    const mainNav = document.getElementById('main-nav');
+    console.log('mainNav element:', mainNav);
+    if (mainNav) {
+        mainNav.style.display = 'flex';
+        console.log('Navigation shown');
+    } else {
+        console.log('main-nav element not found');
+    }
+}
+
+function showSection(sectionName) {
+    // Hide all main sections
+    document.querySelectorAll('.main-section').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Remove active class from all nav tabs
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected section and activate tab
+    if (sectionName === 'learn') {
+        document.getElementById('step-lessons').style.display = 'block';
+        document.getElementById('learn-tab').classList.add('active');
+    } else if (sectionName === 'play') {
+        document.getElementById('section-play').style.display = 'block';
+        document.getElementById('play-tab').classList.add('active');
+    } else if (sectionName === 'perform') {
+        document.getElementById('section-perform').style.display = 'block';
+        document.getElementById('perform-tab').classList.add('active');
+    }
+}
+
 // Initialize when page loads
-document.addEventListener('DOMContentLoaded', initializeApp);
+console.log('About to add DOMContentLoaded listener...');
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded fired, calling initializeApp...');
+    initializeApp();
+});

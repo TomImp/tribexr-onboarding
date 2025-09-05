@@ -8,6 +8,19 @@
 </head>
 <body>
     <div class="container">
+        <!-- Main Navigation (visible after onboarding) -->
+        <nav class="main-nav" id="main-nav" style="display: none;">
+            <div class="nav-logo">
+                <h1>TRIBEXR</h1>
+                <p>DJ ACADEMY</p>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-tab active" id="learn-tab" onclick="showSection('learn')">LEARN</button>
+                <button class="nav-tab" id="play-tab" onclick="showSection('play')">PLAY</button>
+                <button class="nav-tab" id="perform-tab" onclick="showSection('perform')">PERFORM</button>
+            </div>
+        </nav>
+
         <!-- Welcome Screen -->
         <div class="step active" id="step-welcome">
             <div class="logo">
@@ -152,8 +165,10 @@
             </div>
         </div>
 
-        <!-- Step 5: Personalized Lesson Flow -->
-        <div class="step" id="step-lessons">
+        <!-- Main Content Sections -->
+        
+        <!-- LEARN Section (Step 5: Personalized Lesson Flow) -->
+        <div class="step main-section" id="step-lessons">
             <div class="content-card full-width">
                 <div class="lesson-header">
                     <div>
@@ -202,6 +217,48 @@
                 <div class="nav-buttons">
                     <button class="btn-secondary" onclick="restartOnboarding()">Start Over</button>
                     <button class="btn-primary" onclick="startLearning()">Begin Learning</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PLAY Section -->
+        <div class="main-section" id="section-play" style="display: none;">
+            <div class="content-card full-width">
+                <div class="section-header">
+                    <h2>DJ Equipment Playground</h2>
+                    <p class="subtitle">Interactive DJ equipment simulation coming soon</p>
+                </div>
+                
+                <div class="placeholder-content">
+                    <div class="placeholder-icon">🎛️</div>
+                    <h3>PLACEHOLDER - DJ EQUIPMENT HERE</h3>
+                    <p>This section will feature an interactive DJ equipment simulator where you can practice with virtual CDJs, mixers, and controllers.</p>
+                    <div class="coming-soon">
+                        <span class="badge">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PERFORM Section -->
+        <div class="main-section" id="section-perform" style="display: none;">
+            <div class="content-card full-width">
+                <div class="section-header">
+                    <h2>Performance Mode</h2>
+                    <p class="subtitle">Practice performing in virtual venues</p>
+                </div>
+                
+                <div class="performance-content">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/VJCtzbyIeXI" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="performance-info">
+                        <h3>Virtual Performance Environment</h3>
+                        <p>Experience what it's like to perform in front of a crowd. This section will feature virtual venues where you can practice your sets and get comfortable with live performance.</p>
+                    </div>
                 </div>
             </div>
         </div>
