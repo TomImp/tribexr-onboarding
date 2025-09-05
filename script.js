@@ -6,7 +6,11 @@ let userProfile = {
     goals: null,
     frequency: null,
     personalizedLessons: [],
-    completedOnboarding: false
+    completedOnboarding: false,
+    djName: 'DJ Beginner',
+    completedLessons: [],
+    djScore: 0,
+    completionPercentage: 0
 };
 
 // Load saved profile on page load
@@ -112,73 +116,82 @@ function generatePersonalizedPath() {
     if (userProfile.skill === 'first-timer' || userProfile.skill === 'beginner') {
         lessonFlow = [
             { 
-                title: 'Welcome to DJing', 
-                description: 'Introduction to the world of DJing',
+                title: 'Introduction to Beats and Bars', 
+                description: 'Learn the foundation of music structure',
                 type: 'Video Tutorial',
                 difficulty: 'easy',
-                duration: '5 mins'
+                duration: '10 mins',
+                lessonIndex: 0
             },
             {
-                title: 'Understanding DJ Equipment',
-                description: 'Learn about CDJs, mixers, and controllers',
+                title: 'Beat Matching Basics with CDJ-3000',
+                description: 'Master the art of syncing tracks',
                 type: 'Interactive Lesson',
                 difficulty: 'easy',
-                duration: '15 mins'
+                duration: '15 mins',
+                lessonIndex: 4
             },
             {
-                title: 'Counting Beats and Bars',
-                description: 'Master the foundation of music structure',
+                title: 'EQ Basics on DJM-900NXS2',
+                description: 'Learn to blend tracks seamlessly with EQ',
                 type: 'Practice Exercise',
                 difficulty: 'easy',
-                duration: '20 mins'
+                duration: '12 mins',
+                lessonIndex: 9
             }
         ];
     } else if (userProfile.skill === 'intermediate') {
         lessonFlow = [
             {
-                title: 'Advanced Beat Matching',
-                description: 'Perfect your timing and transitions',
+                title: 'Manual Beat Matching on CDJ-2000',
+                description: 'Perfect your timing without sync',
                 type: 'Practice Exercise',
                 difficulty: 'medium',
-                duration: '25 mins'
+                duration: '18 mins',
+                lessonIndex: 5
             },
             {
-                title: 'EQ Mastery',
-                description: 'Learn to blend tracks seamlessly',
+                title: 'Bass Swapping in Tech House',
+                description: 'Advanced EQ techniques for seamless mixing',
                 type: 'Interactive Lesson',
                 difficulty: 'medium',
-                duration: '20 mins'
+                duration: '20 mins',
+                lessonIndex: 11
             },
             {
-                title: 'Creating Your First Mix',
-                description: 'Put it all together in a mini set',
-                type: 'Project',
+                title: 'Harmonic Mixing Basics',
+                description: 'Use key matching to create perfect blends',
+                type: 'Masterclass',
                 difficulty: 'medium',
-                duration: '30 mins'
+                duration: '25 mins',
+                lessonIndex: 26
             }
         ];
     } else {
         lessonFlow = [
             {
-                title: 'Advanced Mixing Techniques',
-                description: 'Harmonic mixing and creative transitions',
+                title: 'Creative Looping in Techno',
+                description: 'Advanced loop techniques for dynamic sets',
                 type: 'Masterclass',
                 difficulty: 'hard',
-                duration: '30 mins'
+                duration: '30 mins',
+                lessonIndex: 31
             },
             {
-                title: 'Performance Psychology',
-                description: 'Reading the crowd and building energy',
+                title: 'Reading the Crowd',
+                description: 'Master the psychology of crowd energy',
                 type: 'Video Tutorial',
                 difficulty: 'hard',
-                duration: '25 mins'
+                duration: '25 mins',
+                lessonIndex: 32
             },
             {
-                title: 'Live Performance Workshop',
-                description: 'Prepare for your next gig',
+                title: 'Peak Time Energy Management',
+                description: 'Control the dance floor like a pro',
                 type: 'Workshop',
                 difficulty: 'hard',
-                duration: '45 mins'
+                duration: '35 mins',
+                lessonIndex: 34
             }
         ];
     }
@@ -189,16 +202,22 @@ function generatePersonalizedPath() {
             description: 'Marketing and networking for DJs',
             type: 'Career Guide',
             difficulty: 'medium',
-            duration: '20 mins'
+            duration: '20 mins',
+            lessonIndex: 45
         });
     }
     
     let pathHTML = '';
     lessonFlow.forEach((lesson, index) => {
         const difficultyClass = lesson.difficulty;
+        const isCompleted = userProfile.completedLessons.includes(lesson.lessonIndex);
+        const completionStatus = isCompleted ? 'completed' : '';
+        const buttonText = isCompleted ? 'Completed ✓' : 'Start Lesson';
+        const buttonClass = isCompleted ? 'btn-completed' : 'btn-primary';
+        
         pathHTML += `
-            <div class="lesson-step">
-                <div class="step-number">${index + 1}</div>
+            <div class="lesson-step ${completionStatus}">
+                <div class="step-number ${isCompleted ? 'completed' : ''}">${index + 1}</div>
                 <div class="lesson-info">
                     <h4>${lesson.title}</h4>
                     <p>${lesson.description}</p>
@@ -207,6 +226,7 @@ function generatePersonalizedPath() {
                         <span class="meta-badge ${difficultyClass}">${lesson.difficulty.charAt(0).toUpperCase() + lesson.difficulty.slice(1)}</span>
                         <span class="meta-badge">${lesson.duration}</span>
                     </div>
+                    <button class="lesson-start-btn ${buttonClass}" onclick="openLesson(${lesson.lessonIndex})">${buttonText}</button>
                 </div>
             </div>
         `;
@@ -225,9 +245,14 @@ function renderPersonalizedPath(lessonFlow) {
     let pathHTML = '';
     lessonFlow.forEach((lesson, index) => {
         const difficultyClass = lesson.difficulty;
+        const isCompleted = userProfile.completedLessons.includes(lesson.lessonIndex);
+        const completionStatus = isCompleted ? 'completed' : '';
+        const buttonText = isCompleted ? 'Completed ✓' : 'Start Lesson';
+        const buttonClass = isCompleted ? 'btn-completed' : 'btn-primary';
+        
         pathHTML += `
-            <div class="lesson-step">
-                <div class="step-number">${index + 1}</div>
+            <div class="lesson-step ${completionStatus}">
+                <div class="step-number ${isCompleted ? 'completed' : ''}">${index + 1}</div>
                 <div class="lesson-info">
                     <h4>${lesson.title}</h4>
                     <p>${lesson.description}</p>
@@ -236,6 +261,7 @@ function renderPersonalizedPath(lessonFlow) {
                         <span class="meta-badge ${difficultyClass}">${lesson.difficulty.charAt(0).toUpperCase() + lesson.difficulty.slice(1)}</span>
                         <span class="meta-badge">${lesson.duration}</span>
                     </div>
+                    <button class="lesson-start-btn ${buttonClass}" onclick="openLesson(${lesson.lessonIndex || 0})">${buttonText}</button>
                 </div>
             </div>
         `;
@@ -484,7 +510,31 @@ function updateProfileSummary() {
         const genreText = userProfile.genres && userProfile.genres.length > 0 ? 
             userProfile.genres.slice(0, 2).map(g => g.replace('-', ' ')).join(' & ') : 'all genres';
         
-        summaryElement.textContent = `Personalized for ${skillText} level, focusing on ${genreText}`;
+        summaryElement.innerHTML = `
+            <div class="profile-stats">
+                <span>Personalized for ${skillText} level, focusing on ${genreText}</span>
+                <div class="stats-row">
+                    <span class="stat"><strong>DJ Score:</strong> ${userProfile.djScore} points</span>
+                    <span class="stat"><strong>Progress:</strong> ${userProfile.completionPercentage}% complete</span>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Function to mark lesson as completed and update score
+function markLessonCompleted(lessonIndex) {
+    if (!userProfile.completedLessons.includes(lessonIndex)) {
+        userProfile.completedLessons.push(lessonIndex);
+        userProfile.djScore += 10; // 10 points per lesson
+        userProfile.completionPercentage = Math.round((userProfile.completedLessons.length / 50) * 100); // 50 total lessons
+        saveUserProfile();
+        updateProfileSummary();
+        
+        // Regenerate the personalized path to show updated completion status
+        if (userProfile.personalizedLessons) {
+            renderPersonalizedPath(userProfile.personalizedLessons);
+        }
     }
 }
 

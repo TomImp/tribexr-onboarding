@@ -395,12 +395,15 @@
             // Save to localStorage
             localStorage.setItem('lessonRatings', JSON.stringify(userRatings));
             
+            // Mark lesson as completed and update DJ score
+            markLessonCompleted(currentLessonIndex);
+            
             // Update UI
             updateStars(rating);
             
             // Show success message
             const message = document.getElementById('rating-message');
-            message.textContent = `Thank you! You rated this lesson ${rating} star${rating > 1 ? 's' : ''}`;
+            message.textContent = `Thank you! You rated this lesson ${rating} star${rating > 1 ? 's' : ''} and earned 10 DJ points!`;
             message.classList.add('success');
             
             // Animate stars
@@ -413,6 +416,25 @@
                     }, 300);
                 }
             });
+        }
+        
+        // Function to mark lesson as completed and update score
+        function markLessonCompleted(lessonIndex) {
+            // Get user profile
+            let userProfile = JSON.parse(localStorage.getItem('tribexr-user-profile')) || {
+                completedLessons: [],
+                djScore: 0,
+                completionPercentage: 0
+            };
+            
+            if (!userProfile.completedLessons.includes(lessonIndex)) {
+                userProfile.completedLessons.push(lessonIndex);
+                userProfile.djScore += 10; // 10 points per lesson
+                userProfile.completionPercentage = Math.round((userProfile.completedLessons.length / 50) * 100); // 50 total lessons
+                
+                // Save updated profile
+                localStorage.setItem('tribexr-user-profile', JSON.stringify(userProfile));
+            }
         }
         
         function updateStars(rating) {

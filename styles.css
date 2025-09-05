@@ -500,6 +500,73 @@ tr:hover {
     box-shadow: 0 4px 12px rgba(243, 75, 106, 0.3);
 }
 
+/* Lesson Start Buttons */
+.lesson-start-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    min-width: 140px;
+}
+
+.lesson-start-btn.btn-primary {
+    background: var(--accent-gradient);
+    color: white;
+}
+
+.lesson-start-btn.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(243, 75, 106, 0.4);
+}
+
+.lesson-start-btn.btn-completed {
+    background: var(--success);
+    color: white;
+    cursor: default;
+}
+
+.lesson-start-btn.btn-completed:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Completed lesson styling */
+.lesson-step.completed {
+    opacity: 0.8;
+    border-left: 4px solid var(--success);
+}
+
+.step-number.completed {
+    background: var(--success);
+    color: white;
+}
+
+/* Profile stats styling */
+.profile-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stats-row {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.stat strong {
+    color: var(--accent-primary);
+}
+
 @media (max-width: 768px) {
     .options-grid {
         grid-template-columns: 1fr;

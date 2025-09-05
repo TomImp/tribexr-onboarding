@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TribeXR - DJ Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .profile-header {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-picture:hover {
+            transform: scale(1.05);
+        }
+        
+        .dj-name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .dj-name:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .dj-name-input {
+            font-size: 32px;
+            font-weight: 700;
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: var(--text-primary);
+            text-align: center;
+            max-width: 300px;
+        }
+        
+        .profile-level {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .progress-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar-container {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            background: var(--accent-gradient);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.8s ease;
+            position: relative;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            z-index: 2;
+        }
+        
+        .achievements-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+        }
+        
+        .achievement-badge {
+            display: inline-block;
+            background: var(--accent-secondary);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 5px;
+            border: 1px solid var(--accent-primary);
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 20px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                padding: 30px 20px;
+            }
+            
+            .dj-name, .dj-name-input {
+                font-size: 24px;
+            }
+            
+            .stat-number {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <a href="index.html?skipToLessons=true" class="back-btn">← Back to Lessons</a>
+        
+        <div class="profile-header">
+            <div class="profile-picture" onclick="changePicture()">🎧</div>
+            <h1 class="dj-name" id="dj-name" onclick="editName()">DJ Beginner</h1>
+            <p class="profile-level" id="profile-level">Beginner Level DJ</p>
+        </div>
+        
+        <div class="profile-stats-grid">
+            <div class="stat-card">
+                <span class="stat-number" id="dj-score">0</span>
+                <span class="stat-label">DJ Score</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="lessons-completed">0</span>
+                <span class="stat-label">Lessons Completed</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="completion-percentage">0%</span>
+                <span class="stat-label">Progress</span>
+            </div>
+        </div>
+        
+        <div class="progress-section">
+            <h3>DJ Journey Progress</h3>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-bar" style="width: 0%">
+                    <span class="progress-text" id="progress-text">0% Complete</span>
+                </div>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 14px;">Complete lessons to earn DJ points and advance your skills!</p>
+        </div>
+        
+        <div class="achievements-section">
+            <h3>Your DJ Journey</h3>
+            <div id="achievements-container">
+                <p style="color: var(--text-secondary); margin: 20px 0;">Start completing lessons to unlock achievements!</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let userProfile = {};
+        
+        // Load user profile
+        function loadProfile() {
+            const savedProfile = localStorage.getItem('tribexr-user-profile');
+            if (savedProfile) {
+                userProfile = { ...{
+                    djName: 'DJ Beginner',
+                    completedLessons: [],
+                    djScore: 0,
+                    completionPercentage: 0,
+                    skill: 'beginner'
+                }, ...JSON.parse(savedProfile) };
+            } else {
+                userProfile = {
+                    djName: 'DJ Beginner',
+                    completedLessons: [],
+                    djScore: 0,
+                    completionPercentage: 0,
+                    skill: 'beginner'
+                };
+            }
+            updateProfileDisplay();
+        }
+        
+        // Update profile display
+        function updateProfileDisplay() {
+            document.getElementById('dj-name').textContent = userProfile.djName || 'DJ Beginner';
+            document.getElementById('dj-score').textContent = userProfile.djScore || 0;
+            document.getElementById('lessons-completed').textContent = userProfile.completedLessons ? userProfile.completedLessons.length : 0;
+            document.getElementById('completion-percentage').textContent = `${userProfile.completionPercentage || 0}%`;
+            
+            // Update progress bar
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const percentage = userProfile.completionPercentage || 0;
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${percentage}% Complete`;
+            
+            // Update skill level
+            const skillText = userProfile.skill ? userProfile.skill.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Beginner';
+            document.getElementById('profile-level').textContent = `${skillText} Level DJ`;
+            
+            // Update achievements
+            updateAchievements();
+        }
+        
+        // Update achievements based on progress
+        function updateAchievements() {
+            const container = document.getElementById('achievements-container');
+            const completedCount = userProfile.completedLessons ? userProfile.completedLessons.length : 0;
+            const score = userProfile.djScore || 0;
+            
+            let achievements = [];
+            
+            if (completedCount >= 1) achievements.push('First Lesson Complete 🎯');
+            if (completedCount >= 5) achievements.push('Quick Learner 🚀');
+            if (completedCount >= 10) achievements.push('Dedicated Student 📚');
+            if (completedCount >= 25) achievements.push('DJ Enthusiast 🎧');
+            if (score >= 100) achievements.push('Century Club 💯');
+            if (score >= 250) achievements.push('Point Master ⭐');
+            if (userProfile.completionPercentage >= 50) achievements.push('Halfway Hero 🏆');
+            if (userProfile.completionPercentage >= 100) achievements.push('DJ Graduate 🎓');
+            
+            if (achievements.length > 0) {
+                container.innerHTML = achievements.map(achievement => 
+                    `<span class="achievement-badge">${achievement}</span>`
+                ).join('');
+            } else {
+                container.innerHTML = '<p style="color: var(--text-secondary); margin: 20px 0;">Start completing lessons to unlock achievements!</p>';
+            }
+        }
+        
+        // Edit DJ name
+        function editName() {
+            const nameElement = document.getElementById('dj-name');
+            const currentName = nameElement.textContent;
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = currentName;
+            input.className = 'dj-name-input';
+            input.maxLength = 30;
+            
+            nameElement.parentNode.replaceChild(input, nameElement);
+            input.focus();
+            input.select();
+            
+            function saveName() {
+                const newName = input.value.trim() || 'DJ Beginner';
+                userProfile.djName = newName;
+                localStorage.setItem('tribexr-user-profile', JSON.stringify(userProfile));
+                
+                const newNameElement = document.createElement('h1');
+                newNameElement.className = 'dj-name';
+                newNameElement.id = 'dj-name';
+                newNameElement.textContent = newName;
+                newNameElement.onclick = editName;
+                
+                input.parentNode.replaceChild(newNameElement, input);
+            }
+            
+            input.addEventListener('blur', saveName);
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    saveName();
+                }
+            });
+        }
+        
+        // Change profile picture (placeholder function)
+        function changePicture() {
+            const pictures = ['🎧', '🎵', '🎶', '🎤', '🔥', '⭐', '🚀', '💿'];
+            const current = document.querySelector('.profile-picture').textContent;
+            const currentIndex = pictures.indexOf(current);
+            const nextIndex = (currentIndex + 1) % pictures.length;
+            document.querySelector('.profile-picture').textContent = pictures[nextIndex];
+        }
+        
+        // Initialize on page load
+        loadProfile();
+    </script>
+</body>
+</html>
