@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TribeXR DJ Academy - Personalized Learning Journey</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="step active" id="step-welcome">
+            <div class="logo">
+                <h1>TRIBEXR</h1>
+                <p class="tagline">DJ ACADEMY</p>
+            </div>
+            <div class="content-card">
+                <h2>Welcome to Your DJ Journey</h2>
+                <p>Let's create a personalized learning path just for you</p>
+                <button class="btn-primary" onclick="nextStep()">Get Started</button>
+            </div>
+        </div>
+
+        <!-- Step 1: Skill Level -->
+        <div class="step" id="step-skill">
+            <div class="progress-bar">
+                <div class="progress" style="width: 20%"></div>
+            </div>
+            <div class="content-card">
+                <h2>What's your current DJ experience?</h2>
+                <div class="options-grid">
+                    <button class="option-card" data-value="first-timer" onclick="selectOption('skill', this)">
+                        <span class="option-icon">🎧</span>
+                        <h3>First Timer</h3>
+                        <p>I've never DJ'd before</p>
+                    </button>
+                    <button class="option-card" data-value="beginner" onclick="selectOption('skill', this)">
+                        <span class="option-icon">🎵</span>
+                        <h3>Beginner</h3>
+                        <p>I know the basics</p>
+                    </button>
+                    <button class="option-card" data-value="intermediate" onclick="selectOption('skill', this)">
+                        <span class="option-icon">🎛️</span>
+                        <h3>Intermediate</h3>
+                        <p>I can mix tracks</p>
+                    </button>
+                    <button class="option-card" data-value="advanced" onclick="selectOption('skill', this)">
+                        <span class="option-icon">🔥</span>
+                        <h3>Advanced</h3>
+                        <p>I perform regularly</p>
+                    </button>
+                </div>
+                <button class="btn-secondary" onclick="previousStep()">Back</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Music Genre -->
+        <div class="step" id="step-genre">
+            <div class="progress-bar">
+                <div class="progress" style="width: 40%"></div>
+            </div>
+            <div class="content-card">
+                <h2>What music genres do you love?</h2>
+                <p class="subtitle">Select all that apply</p>
+                <div class="options-grid multi-select">
+                    <button class="option-card" data-value="house" onclick="toggleOption('genre', this)">
+                        <h3>House</h3>
+                    </button>
+                    <button class="option-card" data-value="edm" onclick="toggleOption('genre', this)">
+                        <h3>EDM</h3>
+                    </button>
+                    <button class="option-card" data-value="techno" onclick="toggleOption('genre', this)">
+                        <h3>Techno</h3>
+                    </button>
+                    <button class="option-card" data-value="tech-house" onclick="toggleOption('genre', this)">
+                        <h3>Tech House</h3>
+                    </button>
+                    <button class="option-card" data-value="hip-hop-rnb" onclick="toggleOption('genre', this)">
+                        <h3>Hip Hop / R&B</h3>
+                    </button>
+                    <button class="option-card" data-value="commercial" onclick="toggleOption('genre', this)">
+                        <h3>Commercial</h3>
+                    </button>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="previousStep()">Back</button>
+                    <button class="btn-primary" onclick="nextStep()" disabled id="genre-next">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Goals -->
+        <div class="step" id="step-goals">
+            <div class="progress-bar">
+                <div class="progress" style="width: 60%"></div>
+            </div>
+            <div class="content-card">
+                <h2>What are your DJ goals?</h2>
+                <div class="options-grid">
+                    <button class="option-card" data-value="have-fun" onclick="selectOption('goals', this)">
+                        <span class="option-icon">🎉</span>
+                        <h3>Have Fun</h3>
+                        <p>DJ for myself and friends</p>
+                    </button>
+                    <button class="option-card" data-value="learn" onclick="selectOption('goals', this)">
+                        <span class="option-icon">📚</span>
+                        <h3>Learn</h3>
+                        <p>Master the fundamentals</p>
+                    </button>
+                    <button class="option-card" data-value="become-pro" onclick="selectOption('goals', this)">
+                        <span class="option-icon">🏆</span>
+                        <h3>Become a Pro</h3>
+                        <p>Perform professionally</p>
+                    </button>
+                </div>
+                <button class="btn-secondary" onclick="previousStep()">Back</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Practice Frequency -->
+        <div class="step" id="step-frequency">
+            <div class="progress-bar">
+                <div class="progress" style="width: 80%"></div>
+            </div>
+            <div class="content-card">
+                <h2>How often will you practice?</h2>
+                <div class="options-list">
+                    <button class="option-list-item" data-value="daily" onclick="selectOption('frequency', this)">
+                        <span>Daily</span>
+                        <span class="option-detail">Every day</span>
+                    </button>
+                    <button class="option-list-item" data-value="few-times-week" onclick="selectOption('frequency', this)">
+                        <span>A few times a week</span>
+                        <span class="option-detail">3-4 times</span>
+                    </button>
+                    <button class="option-list-item" data-value="weekly" onclick="selectOption('frequency', this)">
+                        <span>Weekly</span>
+                        <span class="option-detail">Once a week</span>
+                    </button>
+                    <button class="option-list-item" data-value="monthly" onclick="selectOption('frequency', this)">
+                        <span>Monthly</span>
+                        <span class="option-detail">A few times a month</span>
+                    </button>
+                    <button class="option-list-item" data-value="occasionally" onclick="selectOption('frequency', this)">
+                        <span>Occasionally</span>
+                        <span class="option-detail">When I have time</span>
+                    </button>
+                </div>
+                <button class="btn-secondary" onclick="previousStep()">Back</button>
+            </div>
+        </div>
+
+        <!-- Step 5: Personalized Lesson Flow -->
+        <div class="step" id="step-lessons">
+            <div class="content-card full-width">
+                <h2>Your Personalized DJ Journey</h2>
+                <p class="subtitle">Based on your preferences, here's your custom learning path</p>
+                
+                <div class="lesson-path" id="lesson-path">
+                    <!-- Dynamically generated lesson flow will appear here -->
+                </div>
+
+                <div class="lesson-library">
+                    <h3>Complete Lesson Library</h3>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="filterLessons('all')">All Lessons</button>
+                        <button class="filter-tab" onclick="filterLessons('recommended')">Recommended</button>
+                        <button class="filter-tab" onclick="filterLessons('equipment')">By Equipment</button>
+                        <button class="filter-tab" onclick="filterLessons('skill')">By Skill</button>
+                    </div>
+                    
+                    <div class="table-wrapper">
+                        <table id="lessons-table">
+                            <thead>
+                                <tr>
+                                    <th>Lesson</th>
+                                    <th>Skill</th>
+                                    <th>Difficulty</th>
+                                    <th>Equipment</th>
+                                    <th>Genre</th>
+                                    <th>Rating</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lessons-tbody">
+                                <!-- Dynamically populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="restartOnboarding()">Start Over</button>
+                    <button class="btn-primary" onclick="startLearning()">Begin Learning</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="lessons-data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
