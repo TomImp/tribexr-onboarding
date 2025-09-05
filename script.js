@@ -403,7 +403,7 @@ function startLearning() {
 }
 
 function openLesson(lessonIndex) {
-    window.open(`lesson-viewer.html?lesson=${lessonIndex}`, '_blank');
+    window.location.href = `lesson-viewer.html?lesson=${lessonIndex}`;
 }
 
 // Initialize app on page load

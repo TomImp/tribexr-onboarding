@@ -7,16 +7,22 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         .viewer-container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
+        }
+        
+        .lesson-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
         }
         
         .video-container {
             position: relative;
             width: 100%;
             padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            margin-bottom: 30px;
             background: #000;
             border-radius: 12px;
             overflow: hidden;
@@ -31,11 +37,16 @@
             border: none;
         }
         
+        .lesson-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
         .lesson-details {
             background: var(--bg-card);
             border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 25px;
         }
         
         .lesson-header {
@@ -70,42 +81,62 @@
         .rating-section {
             background: rgba(0,0,0,0.3);
             border-radius: 12px;
-            padding: 25px;
-            text-align: center;
+            padding: 20px;
         }
         
         .rating-section h3 {
-            margin-bottom: 20px;
-            font-size: 20px;
+            margin-bottom: 15px;
+            font-size: 18px;
         }
         
-        .star-rating {
+        .thumbs-rating {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 15px;
         }
         
-        .star-btn {
-            background: none;
-            border: none;
-            font-size: 36px;
+        .thumb-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
             cursor: pointer;
-            color: #444;
             transition: all 0.3s ease;
-            padding: 0;
         }
         
-        .star-btn:hover {
-            transform: scale(1.2);
+        .thumb-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255,255,255,0.2);
         }
         
-        .star-btn.filled {
-            color: #FFD700;
+        .thumb-btn.selected.thumbs-up {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
         }
         
-        .star-btn.hover {
-            color: #FFA500;
+        .thumb-btn.selected.thumbs-down {
+            background: #f44336;
+            border-color: #f44336;
+            color: white;
+        }
+        
+        .rating-stats {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .rating-percentage {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent-primary);
         }
         
         .rating-message {
@@ -205,13 +236,20 @@
         }
         
         @media (max-width: 768px) {
+            .lesson-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
             .lesson-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
             
-            .star-btn {
-                font-size: 28px;
+            .thumb-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
             }
             
             .navigation-buttons {
@@ -232,45 +270,51 @@
             <span class="progress-text">Lesson <span id="lesson-number">1</span> of <span id="total-lessons">50</span></span>
         </div>
         
-        <!-- Video Player -->
-        <div class="video-container">
-            <iframe id="video-frame" 
-                    src="" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-            </iframe>
-        </div>
-        
-        <!-- Lesson Details -->
-        <div class="lesson-details">
-            <div class="lesson-header">
-                <h2 class="lesson-title" id="lesson-title">Loading...</h2>
+        <!-- Main Content Layout -->
+        <div class="lesson-content">
+            <!-- Video Player -->
+            <div class="video-container">
+                <iframe id="video-frame" 
+                        src="" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
             </div>
             
-            <div class="lesson-metadata">
-                <span class="metadata-item" id="skill-badge">Skill: Loading...</span>
-                <span class="metadata-item" id="difficulty-badge">Difficulty: Loading...</span>
-                <span class="metadata-item" id="equipment-badge">Equipment: Loading...</span>
-                <span class="metadata-item" id="genre-badge">Genre: Loading...</span>
-            </div>
-            
-            <!-- Rating Section -->
-            <div class="rating-section">
-                <h3>Rate This Lesson</h3>
-                <div class="star-rating" id="star-rating">
-                    <button class="star-btn" data-rating="1" onclick="setRating(1)">☆</button>
-                    <button class="star-btn" data-rating="2" onclick="setRating(2)">☆</button>
-                    <button class="star-btn" data-rating="3" onclick="setRating(3)">☆</button>
-                    <button class="star-btn" data-rating="4" onclick="setRating(4)">☆</button>
-                    <button class="star-btn" data-rating="5" onclick="setRating(5)">☆</button>
+            <!-- Sidebar with lesson info and rating -->
+            <div class="lesson-sidebar">
+                <!-- Lesson Details -->
+                <div class="lesson-details">
+                    <div class="lesson-header">
+                        <h2 class="lesson-title" id="lesson-title">Loading...</h2>
+                    </div>
+                    
+                    <div class="lesson-metadata">
+                        <span class="metadata-item" id="skill-badge">Skill: Loading...</span>
+                        <span class="metadata-item" id="difficulty-badge">Difficulty: Loading...</span>
+                        <span class="metadata-item" id="equipment-badge">Equipment: Loading...</span>
+                        <span class="metadata-item" id="genre-badge">Genre: Loading...</span>
+                    </div>
                 </div>
-                <div class="rating-message" id="rating-message">How helpful was this lesson?</div>
-            </div>
-            
-            <!-- Navigation -->
-            <div class="navigation-buttons">
-                <button class="nav-btn" id="prev-btn" onclick="previousLesson()">← Previous Lesson</button>
-                <button class="nav-btn primary" id="next-btn" onclick="nextLesson()">Next Lesson →</button>
+                
+                <!-- Rating Section -->
+                <div class="rating-section">
+                    <h3>Rate This Lesson</h3>
+                    <div class="thumbs-rating">
+                        <button class="thumb-btn thumbs-up" onclick="setRating('up')">👍</button>
+                        <button class="thumb-btn thumbs-down" onclick="setRating('down')">👎</button>
+                    </div>
+                    <div class="rating-stats">
+                        <div class="rating-percentage" id="rating-percentage">--% positive</div>
+                        <div class="rating-message" id="rating-message">How helpful was this lesson?</div>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="navigation-buttons">
+                    <button class="nav-btn" id="prev-btn" onclick="previousLesson()">← Previous</button>
+                    <button class="nav-btn primary" id="next-btn" onclick="nextLesson()">Next →</button>
+                </div>
             </div>
         </div>
         
@@ -356,14 +400,18 @@
             
             // Load saved rating if exists
             if (userRatings[lesson.name]) {
-                updateStars(userRatings[lesson.name]);
-                document.getElementById('rating-message').textContent = `You rated this lesson ${userRatings[lesson.name]} stars`;
+                updateThumbs(userRatings[lesson.name]);
+                const ratingText = userRatings[lesson.name] === 'up' ? 'helpful' : 'needs improvement';
+                document.getElementById('rating-message').textContent = `You rated this lesson as ${ratingText}`;
                 document.getElementById('rating-message').classList.add('success');
             } else {
-                updateStars(0);
+                updateThumbs(null);
                 document.getElementById('rating-message').textContent = 'How helpful was this lesson?';
                 document.getElementById('rating-message').classList.remove('success');
             }
+            
+            // Update overall rating percentage
+            updateRatingPercentage();
             
             // Load related lessons
             loadRelatedLessons(lesson);
@@ -388,9 +436,9 @@
             return videoId;
         }
         
-        function setRating(rating) {
+        function setRating(type) {
             const lesson = lessons[currentLessonIndex];
-            userRatings[lesson.name] = rating;
+            userRatings[lesson.name] = type;
             
             // Save to localStorage
             localStorage.setItem('lessonRatings', JSON.stringify(userRatings));
@@ -399,23 +447,21 @@
             markLessonCompleted(currentLessonIndex);
             
             // Update UI
-            updateStars(rating);
+            updateThumbs(type);
+            updateRatingPercentage();
             
             // Show success message
             const message = document.getElementById('rating-message');
-            message.textContent = `Thank you! You rated this lesson ${rating} star${rating > 1 ? 's' : ''} and earned 10 DJ points!`;
+            const ratingText = type === 'up' ? 'helpful' : 'needs improvement';
+            message.textContent = `Thanks for rating! You earned 10 DJ points!`;
             message.classList.add('success');
             
-            // Animate stars
-            const stars = document.querySelectorAll('.star-btn');
-            stars.forEach((star, index) => {
-                if (index < rating) {
-                    star.style.transform = 'scale(1.2)';
-                    setTimeout(() => {
-                        star.style.transform = 'scale(1)';
-                    }, 300);
-                }
-            });
+            // Animate selected thumb
+            const selectedThumb = document.querySelector(`.thumb-btn.thumbs-${type}`);
+            selectedThumb.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                selectedThumb.style.transform = 'scale(1)';
+            }, 300);
         }
         
         // Function to mark lesson as completed and update score
@@ -437,38 +483,34 @@
             }
         }
         
-        function updateStars(rating) {
-            const stars = document.querySelectorAll('.star-btn');
-            stars.forEach((star, index) => {
-                if (index < rating) {
-                    star.textContent = '★';
-                    star.classList.add('filled');
-                } else {
-                    star.textContent = '☆';
-                    star.classList.remove('filled');
-                }
-            });
+        function updateThumbs(rating) {
+            const thumbsUp = document.querySelector('.thumb-btn.thumbs-up');
+            const thumbsDown = document.querySelector('.thumb-btn.thumbs-down');
+            
+            // Reset both
+            thumbsUp.classList.remove('selected');
+            thumbsDown.classList.remove('selected');
+            
+            // Set selected
+            if (rating === 'up') {
+                thumbsUp.classList.add('selected');
+            } else if (rating === 'down') {
+                thumbsDown.classList.add('selected');
+            }
         }
         
-        // Add hover effect for stars
-        document.querySelectorAll('.star-btn').forEach((star, index) => {
-            star.addEventListener('mouseenter', () => {
-                const stars = document.querySelectorAll('.star-btn');
-                stars.forEach((s, i) => {
-                    if (i <= index) {
-                        s.classList.add('hover');
-                    } else {
-                        s.classList.remove('hover');
-                    }
-                });
-            });
-        });
-        
-        document.getElementById('star-rating').addEventListener('mouseleave', () => {
-            document.querySelectorAll('.star-btn').forEach(star => {
-                star.classList.remove('hover');
-            });
-        });
+        function updateRatingPercentage() {
+            // Calculate percentage based on all ratings
+            const allRatings = Object.values(userRatings);
+            if (allRatings.length === 0) {
+                document.getElementById('rating-percentage').textContent = '--% positive';
+                return;
+            }
+            
+            const upRatings = allRatings.filter(r => r === 'up').length;
+            const percentage = Math.round((upRatings / allRatings.length) * 100);
+            document.getElementById('rating-percentage').textContent = `${percentage}% positive`;
+        }
         
         function previousLesson() {
             if (currentLessonIndex > 0) {
