@@ -330,12 +330,12 @@
     <script src="lessons-data.js"></script>
     <script>
         let currentLessonIndex = 0;
-        let userRatings = {};
+        let lessonRatings = {}; // Store ratings by lesson index
         
         // Load saved ratings from localStorage
         const savedRatings = localStorage.getItem('lessonRatings');
         if (savedRatings) {
-            userRatings = JSON.parse(savedRatings);
+            lessonRatings = JSON.parse(savedRatings);
         }
         
         // Get lesson index from URL parameter
@@ -398,10 +398,12 @@
             document.getElementById('prev-btn').disabled = index === 0;
             document.getElementById('next-btn').disabled = index === lessons.length - 1;
             
-            // Load saved rating if exists
-            if (userRatings[lesson.name]) {
-                updateThumbs(userRatings[lesson.name]);
-                const ratingText = userRatings[lesson.name] === 'up' ? 'helpful' : 'needs improvement';
+            // Load saved rating for this specific lesson if exists
+            console.log(`Loading lesson ${index}, checking for existing rating:`, lessonRatings[index]);
+            
+            if (lessonRatings[index]) {
+                updateThumbs(lessonRatings[index]);
+                const ratingText = lessonRatings[index] === 'up' ? 'helpful' : 'needs improvement';
                 document.getElementById('rating-message').textContent = `You rated this lesson as ${ratingText}`;
                 document.getElementById('rating-message').classList.add('success');
             } else {
@@ -437,11 +439,13 @@
         }
         
         function setRating(type) {
-            const lesson = lessons[currentLessonIndex];
-            userRatings[lesson.name] = type;
+            // Store rating by lesson index
+            lessonRatings[currentLessonIndex] = type;
             
             // Save to localStorage
-            localStorage.setItem('lessonRatings', JSON.stringify(userRatings));
+            localStorage.setItem('lessonRatings', JSON.stringify(lessonRatings));
+            
+            console.log(`Rating lesson ${currentLessonIndex} as ${type}:`, lessonRatings);
             
             // Mark lesson as completed and update DJ score
             markLessonCompleted(currentLessonIndex);
@@ -500,8 +504,8 @@
         }
         
         function updateRatingPercentage() {
-            // Calculate percentage based on all ratings
-            const allRatings = Object.values(userRatings);
+            // Calculate percentage based on all lesson ratings
+            const allRatings = Object.values(lessonRatings);
             if (allRatings.length === 0) {
                 document.getElementById('rating-percentage').textContent = '--% positive';
                 return;
@@ -509,7 +513,7 @@
             
             const upRatings = allRatings.filter(r => r === 'up').length;
             const percentage = Math.round((upRatings / allRatings.length) * 100);
-            document.getElementById('rating-percentage').textContent = `${percentage}% positive`;
+            document.getElementById('rating-percentage').textContent = `${percentage}% positive (${allRatings.length} lesson${allRatings.length > 1 ? 's' : ''} rated)`;
         }
         
         function previousLesson() {
