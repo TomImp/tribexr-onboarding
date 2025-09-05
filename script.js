@@ -193,7 +193,7 @@ function populateLessonsTable() {
     const tbody = document.getElementById('lessons-tbody');
     let tableHTML = '';
     
-    lessons.forEach(lesson => {
+    lessons.forEach((lesson, index) => {
         const difficultyDots = createDifficultyIndicator(lesson.difficulty);
         const ratingStars = createRatingStars(lesson.rating);
         
@@ -205,7 +205,7 @@ function populateLessonsTable() {
                 <td>${lesson.equipment}</td>
                 <td>${lesson.genre}</td>
                 <td><div class="rating">${ratingStars}</div></td>
-                <td><button class="btn-small" onclick="window.open('${lesson.link}', '_blank')">Start</button></td>
+                <td><button class="btn-small" onclick="openLesson(${index})">Start</button></td>
             </tr>
         `;
     });
@@ -260,6 +260,7 @@ function filterLessons(filter) {
     
     let tableHTML = '';
     filteredLessons.forEach(lesson => {
+        const originalIndex = lessons.indexOf(lesson);
         const difficultyDots = createDifficultyIndicator(lesson.difficulty);
         const ratingStars = createRatingStars(lesson.rating);
         
@@ -271,7 +272,7 @@ function filterLessons(filter) {
                 <td>${lesson.equipment}</td>
                 <td>${lesson.genre}</td>
                 <td><div class="rating">${ratingStars}</div></td>
-                <td><button class="btn-small" onclick="window.open('${lesson.link}', '_blank')">Start</button></td>
+                <td><button class="btn-small" onclick="openLesson(${originalIndex})">Start</button></td>
             </tr>
         `;
     });
@@ -293,5 +294,10 @@ function restartOnboarding() {
 }
 
 function startLearning() {
-    alert('Welcome to TribeXR DJ Academy! Your personalized learning journey begins now. You would be redirected to the first lesson in a real implementation.');
+    // Open first recommended lesson
+    openLesson(0);
+}
+
+function openLesson(lessonIndex) {
+    window.open(`lesson-viewer.html?lesson=${lessonIndex}`, '_blank');
 }

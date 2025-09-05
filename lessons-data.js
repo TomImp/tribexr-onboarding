@@ -7,7 +7,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 5,
-        link: "https://youtube.com/placeholder1"
+        link: "https://www.youtube.com/watch?v=8Az3vQ4V1SA"
     },
     {
         name: "Counting 4/4 Time in House Music",
@@ -16,7 +16,7 @@ const lessons = [
         equipment: "Any",
         genre: "House",
         rating: 4,
-        link: "https://youtube.com/placeholder2"
+        link: "https://www.youtube.com/watch?v=e6CIof3R5ZI"
     },
     {
         name: "Understanding BPM in EDM",
@@ -25,7 +25,7 @@ const lessons = [
         equipment: "Any",
         genre: "EDM",
         rating: 5,
-        link: "https://youtube.com/placeholder3"
+        link: "https://www.youtube.com/watch?v=FTt81e5_vOI"
     },
     {
         name: "Techno Rhythm Patterns",
@@ -34,7 +34,7 @@ const lessons = [
         equipment: "Any",
         genre: "Techno",
         rating: 4,
-        link: "https://youtube.com/placeholder4"
+        link: "https://www.youtube.com/watch?v=pGYl6cAzJ1k"
     },
     
     // Beat Matching
@@ -45,7 +45,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "House",
         rating: 5,
-        link: "https://youtube.com/placeholder5"
+        link: "https://www.youtube.com/watch?v=oMQzl5J7RiY"
     },
     {
         name: "Manual Beat Matching on CDJ-2000",
@@ -54,7 +54,7 @@ const lessons = [
         equipment: "CDJ-2000",
         genre: "Tech House",
         rating: 4,
-        link: "https://youtube.com/placeholder6"
+        link: "https://www.youtube.com/watch?v=hIMlxnEHWnE"
     },
     {
         name: "Beat Matching Hip Hop Tracks",
@@ -63,7 +63,7 @@ const lessons = [
         equipment: "DDJ-FLX4",
         genre: "Hip Hop / R&B",
         rating: 5,
-        link: "https://youtube.com/placeholder7"
+        link: "https://www.youtube.com/watch?v=U2OhL9SC9DE"
     },
     {
         name: "Advanced Beat Matching with Vinyl",
@@ -72,7 +72,7 @@ const lessons = [
         equipment: "Turntables",
         genre: "All Genres",
         rating: 5,
-        link: "https://youtube.com/placeholder8"
+        link: "https://www.youtube.com/watch?v=sQJoMJJzjaE"
     },
     {
         name: "Beat Grid Analysis in rekordbox",
@@ -81,7 +81,7 @@ const lessons = [
         equipment: "rekordbox",
         genre: "All Genres",
         rating: 4,
-        link: "https://youtube.com/placeholder9"
+        link: "https://www.youtube.com/watch?v=5F-CKxQLAE8"
     },
     
     // EQ Techniques
@@ -92,7 +92,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "All Genres",
         rating: 5,
-        link: "https://youtube.com/placeholder10"
+        link: "https://www.youtube.com/watch?v=v7xF_h0tCSU"
     },
     {
         name: "Creative EQ Mixing in House",
@@ -101,7 +101,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "House",
         rating: 4,
-        link: "https://youtube.com/placeholder11"
+        link: "https://www.youtube.com/watch?v=VCXdh0nMxLw"
     },
     {
         name: "Bass Swapping in Tech House",
@@ -110,7 +110,7 @@ const lessons = [
         equipment: "DJM-A9",
         genre: "Tech House",
         rating: 5,
-        link: "https://youtube.com/placeholder12"
+        link: "https://www.youtube.com/watch?v=5cI8qVT_VHs"
     },
     {
         name: "3-Band EQ Mastery",
@@ -119,7 +119,7 @@ const lessons = [
         equipment: "DJM-V10",
         genre: "Techno",
         rating: 5,
-        link: "https://youtube.com/placeholder13"
+        link: "https://www.youtube.com/watch?v=A5M3MyR87uw"
     },
     {
         name: "EQ Transitions for EDM Drops",
@@ -128,7 +128,7 @@ const lessons = [
         equipment: "DDJ-FLX10",
         genre: "EDM",
         rating: 4,
-        link: "https://youtube.com/placeholder14"
+        link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     },
     
     // Effects
@@ -139,7 +139,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "All Genres",
         rating: 5,
-        link: "https://youtube.com/placeholder15"
+        link: "https://www.youtube.com/watch?v=MFol_H6q34Y"
     },
     {
         name: "Using Reverb and Delay",
@@ -148,7 +148,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "House",
         rating: 4,
-        link: "https://youtube.com/placeholder16"
+        link: "https://www.youtube.com/watch?v=mNhMvxJ4hqo"
     },
     {
         name: "Color FX on Pioneer Mixers",
@@ -157,7 +157,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "All Genres",
         rating: 5,
-        link: "https://youtube.com/placeholder17"
+        link: "https://www.youtube.com/watch?v=FMnOKGY4PuI"
     },
     {
         name: "Beat FX for Techno",
@@ -166,7 +166,7 @@ const lessons = [
         equipment: "DJM-V10",
         genre: "Techno",
         rating: 4,
-        link: "https://youtube.com/placeholder18"
+        link: "https://www.youtube.com/watch?v=9Hb9JyoKRxg"
     },
     {
         name: "Creative Filter Use in EDM",
@@ -175,7 +175,7 @@ const lessons = [
         equipment: "DDJ-FLX6",
         genre: "EDM",
         rating: 5,
-        link: "https://youtube.com/placeholder19"
+        link: "https://www.youtube.com/watch?v=wL8DVHuWI7Y"
     },
     
     // Scratching
@@ -186,7 +186,7 @@ const lessons = [
         equipment: "Turntables",
         genre: "Hip Hop / R&B",
         rating: 5,
-        link: "https://youtube.com/placeholder20"
+        link: "https://www.youtube.com/watch?v=3SLVgbqdLww"
     },
     {
         name: "Chirp Scratch Technique",
