@@ -50,6 +50,7 @@ function nextStep() {
             userProfile.completedOnboarding = true;
             generatePersonalizedPath();
             populateLessonsTable();
+            updateProfileSummary();
             saveUserProfile();
         }
     }
@@ -380,7 +381,40 @@ function openLesson(lessonIndex) {
 }
 
 // Initialize app on page load
-function initializeApp() {\n    const hasProfile = loadUserProfile();\n    \n    // Check URL parameters\n    const urlParams = new URLSearchParams(window.location.search);\n    const skipToLessons = urlParams.get('skipToLessons') === 'true';\n    \n    if ((hasProfile && userProfile.completedOnboarding) || skipToLessons) {\n        // Skip to lessons page and restore selections\n        currentStep = 5; // lessons step\n        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));\n        document.getElementById('step-lessons').classList.add('active');\n        \n        // Restore UI selections\n        restoreUserSelections();\n        \n        // Generate or restore personalized path\n        generatePersonalizedPath();\n        populateLessonsTable();\n        \n        // Update profile summary\n        updateProfileSummary();\n        \n        // Clean up URL\n        if (skipToLessons) {\n            window.history.replaceState({}, document.title, window.location.pathname);\n        }\n    } else if (hasProfile) {\n        // Partial profile exists, restore selections but stay on current step\n        restoreUserSelections();\n    }\n}\n\n// Restore user selections in the UI\nfunction restoreUserSelections() {\n    // Restore skill selection\n    if (userProfile.skill) {\n        const skillElement = document.querySelector(`[data-value=\"${userProfile.skill}\"]`);\n        if (skillElement) skillElement.classList.add('selected');\n    }\n    \n    // Restore genre selections\n    if (userProfile.genres && userProfile.genres.length > 0) {\n        userProfile.genres.forEach(genre => {\n            const genreElement = document.querySelector(`[data-value=\"${genre}\"]`);\n            if (genreElement) genreElement.classList.add('selected');\n        });\n        \n        // Enable genre next button\n        const genreNextBtn = document.getElementById('genre-next');\n        if (genreNextBtn) {\n            genreNextBtn.disabled = false;\n        }\n    }\n    \n    // Restore goals selection\n    if (userProfile.goals) {\n        const goalsElement = document.querySelector(`[data-value=\"${userProfile.goals}\"]`);\n        if (goalsElement) goalsElement.classList.add('selected');\n    }\n    \n    // Restore frequency selection\n    if (userProfile.frequency) {\n        const frequencyElement = document.querySelector(`[data-value=\"${userProfile.frequency}\"]`);\n        if (frequencyElement) frequencyElement.classList.add('selected');\n    }\n}\n\n// Profile management functions
+function initializeApp() {
+    const hasProfile = loadUserProfile();
+    
+    // Check URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const skipToLessons = urlParams.get('skipToLessons') === 'true';
+    
+    if ((hasProfile && userProfile.completedOnboarding) || skipToLessons) {
+        // Skip to lessons page and restore selections
+        currentStep = 5; // lessons step
+        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+        document.getElementById('step-lessons').classList.add('active');
+        
+        // Restore UI selections
+        restoreUserSelections();
+        
+        // Generate or restore personalized path
+        generatePersonalizedPath();
+        populateLessonsTable();
+        
+        // Update profile summary
+        updateProfileSummary();
+        
+        // Clean up URL
+        if (skipToLessons) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    } else if (hasProfile && !userProfile.completedOnboarding) {
+        // Partial profile exists, restore selections but start fresh
+        restoreUserSelections();
+        // Don't change the current step - let user start normally
+    }
+    // If no profile at all, just show welcome screen (default)
+}\n\n// Restore user selections in the UI\nfunction restoreUserSelections() {\n    // Restore skill selection\n    if (userProfile.skill) {\n        const skillElement = document.querySelector(`[data-value=\"${userProfile.skill}\"]`);\n        if (skillElement) skillElement.classList.add('selected');\n    }\n    \n    // Restore genre selections\n    if (userProfile.genres && userProfile.genres.length > 0) {\n        userProfile.genres.forEach(genre => {\n            const genreElement = document.querySelector(`[data-value=\"${genre}\"]`);\n            if (genreElement) genreElement.classList.add('selected');\n        });\n        \n        // Enable genre next button\n        const genreNextBtn = document.getElementById('genre-next');\n        if (genreNextBtn) {\n            genreNextBtn.disabled = false;\n        }\n    }\n    \n    // Restore goals selection\n    if (userProfile.goals) {\n        const goalsElement = document.querySelector(`[data-value=\"${userProfile.goals}\"]`);\n        if (goalsElement) goalsElement.classList.add('selected');\n    }\n    \n    // Restore frequency selection\n    if (userProfile.frequency) {\n        const frequencyElement = document.querySelector(`[data-value=\"${userProfile.frequency}\"]`);\n        if (frequencyElement) frequencyElement.classList.add('selected');\n    }\n}\n\n// Profile management functions
 function showProfile() {
     const profileText = `Your DJ Profile:
     
@@ -415,6 +449,16 @@ function updateProfileSummary() {
         
         summaryElement.textContent = `Personalized for ${skillText} level, focusing on ${genreText}`;
     }
+}
+
+// Debug function to reset profile completely
+function resetProfile() {
+    clearUserProfile();
+    currentStep = 0;
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+    document.getElementById('step-welcome').classList.add('active');
+    document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+    alert('Profile reset! You can now start fresh.');
 }
 
 // Initialize when page loads
