@@ -1,21 +1,56 @@
 let currentStep = 0;
 const steps = ['welcome', 'skill', 'genre', 'goals', 'frequency', 'lessons'];
-const userProfile = {
+let userProfile = {
     skill: null,
     genres: [],
     goals: null,
-    frequency: null
+    frequency: null,
+    personalizedLessons: [],
+    completedOnboarding: false
 };
+
+// Load saved profile on page load
+function loadUserProfile() {
+    const savedProfile = localStorage.getItem('tribexr-user-profile');
+    if (savedProfile) {
+        userProfile = { ...userProfile, ...JSON.parse(savedProfile) };
+        return true;
+    }
+    return false;
+}
+
+// Save profile to localStorage
+function saveUserProfile() {
+    localStorage.setItem('tribexr-user-profile', JSON.stringify(userProfile));
+}
+
+// Clear profile (for reset)
+function clearUserProfile() {
+    localStorage.removeItem('tribexr-user-profile');
+    userProfile = {
+        skill: null,
+        genres: [],
+        goals: null,
+        frequency: null,
+        personalizedLessons: [],
+        completedOnboarding: false
+    };
+}
 
 function nextStep() {
     if (currentStep < steps.length - 1) {
+        // Save profile before moving to next step
+        saveUserProfile();
+        
         document.getElementById(`step-${steps[currentStep]}`).classList.remove('active');
         currentStep++;
         document.getElementById(`step-${steps[currentStep]}`).classList.add('active');
         
         if (steps[currentStep] === 'lessons') {
+            userProfile.completedOnboarding = true;
             generatePersonalizedPath();
             populateLessonsTable();
+            saveUserProfile();
         }
     }
 }
@@ -36,6 +71,7 @@ function selectOption(category, element) {
     element.classList.add('selected');
     
     userProfile[category] = element.dataset.value;
+    saveUserProfile(); // Save immediately
     
     setTimeout(() => nextStep(), 300);
 }
@@ -54,11 +90,19 @@ function toggleOption(category, element) {
         }
         
         document.getElementById('genre-next').disabled = userProfile.genres.length === 0;
+        saveUserProfile(); // Save immediately
     }
 }
 
 function generatePersonalizedPath() {
     const pathContainer = document.getElementById('lesson-path');
+    
+    // Check if we already have saved personalized lessons
+    if (userProfile.personalizedLessons && userProfile.personalizedLessons.length > 0) {
+        renderPersonalizedPath(userProfile.personalizedLessons);
+        return;
+    }
+    
     const skillLessons = getSkillBasedLessons(userProfile.skill);
     const goalLessons = getGoalBasedLessons(userProfile.goals);
     
@@ -167,6 +211,34 @@ function generatePersonalizedPath() {
         `;
     });
     
+    pathContainer.innerHTML = pathHTML;
+    
+    // Save the generated lesson flow
+    userProfile.personalizedLessons = lessonFlow;
+    saveUserProfile();
+}
+
+// Helper function to render saved personalized path
+function renderPersonalizedPath(lessonFlow) {
+    const pathContainer = document.getElementById('lesson-path');
+    let pathHTML = '';
+    lessonFlow.forEach((lesson, index) => {
+        const difficultyClass = lesson.difficulty;
+        pathHTML += `
+            <div class="lesson-step">
+                <div class="step-number">${index + 1}</div>
+                <div class="lesson-info">
+                    <h4>${lesson.title}</h4>
+                    <p>${lesson.description}</p>
+                    <div class="lesson-meta">
+                        <span class="meta-badge">${lesson.type}</span>
+                        <span class="meta-badge ${difficultyClass}">${lesson.difficulty.charAt(0).toUpperCase() + lesson.difficulty.slice(1)}</span>
+                        <span class="meta-badge">${lesson.duration}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
     pathContainer.innerHTML = pathHTML;
 }
 
@@ -281,16 +353,21 @@ function filterLessons(filter) {
 }
 
 function restartOnboarding() {
+    // Clear saved profile
+    clearUserProfile();
+    
     currentStep = 0;
-    userProfile.skill = null;
-    userProfile.genres = [];
-    userProfile.goals = null;
-    userProfile.frequency = null;
     
     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
     document.getElementById('step-welcome').classList.add('active');
     
     document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+    
+    // Reset genre button state
+    const genreNextBtn = document.getElementById('genre-next');
+    if (genreNextBtn) {
+        genreNextBtn.disabled = true;
+    }
 }
 
 function startLearning() {
@@ -301,3 +378,44 @@ function startLearning() {
 function openLesson(lessonIndex) {
     window.open(`lesson-viewer.html?lesson=${lessonIndex}`, '_blank');
 }
+
+// Initialize app on page load
+function initializeApp() {\n    const hasProfile = loadUserProfile();\n    \n    // Check URL parameters\n    const urlParams = new URLSearchParams(window.location.search);\n    const skipToLessons = urlParams.get('skipToLessons') === 'true';\n    \n    if ((hasProfile && userProfile.completedOnboarding) || skipToLessons) {\n        // Skip to lessons page and restore selections\n        currentStep = 5; // lessons step\n        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));\n        document.getElementById('step-lessons').classList.add('active');\n        \n        // Restore UI selections\n        restoreUserSelections();\n        \n        // Generate or restore personalized path\n        generatePersonalizedPath();\n        populateLessonsTable();\n        \n        // Update profile summary\n        updateProfileSummary();\n        \n        // Clean up URL\n        if (skipToLessons) {\n            window.history.replaceState({}, document.title, window.location.pathname);\n        }\n    } else if (hasProfile) {\n        // Partial profile exists, restore selections but stay on current step\n        restoreUserSelections();\n    }\n}\n\n// Restore user selections in the UI\nfunction restoreUserSelections() {\n    // Restore skill selection\n    if (userProfile.skill) {\n        const skillElement = document.querySelector(`[data-value=\"${userProfile.skill}\"]`);\n        if (skillElement) skillElement.classList.add('selected');\n    }\n    \n    // Restore genre selections\n    if (userProfile.genres && userProfile.genres.length > 0) {\n        userProfile.genres.forEach(genre => {\n            const genreElement = document.querySelector(`[data-value=\"${genre}\"]`);\n            if (genreElement) genreElement.classList.add('selected');\n        });\n        \n        // Enable genre next button\n        const genreNextBtn = document.getElementById('genre-next');\n        if (genreNextBtn) {\n            genreNextBtn.disabled = false;\n        }\n    }\n    \n    // Restore goals selection\n    if (userProfile.goals) {\n        const goalsElement = document.querySelector(`[data-value=\"${userProfile.goals}\"]`);\n        if (goalsElement) goalsElement.classList.add('selected');\n    }\n    \n    // Restore frequency selection\n    if (userProfile.frequency) {\n        const frequencyElement = document.querySelector(`[data-value=\"${userProfile.frequency}\"]`);\n        if (frequencyElement) frequencyElement.classList.add('selected');\n    }\n}\n\n// Profile management functions
+function showProfile() {
+    const profileText = `Your DJ Profile:
+    
+• Experience Level: ${userProfile.skill ? userProfile.skill.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not set'}
+• Music Genres: ${userProfile.genres && userProfile.genres.length > 0 ? userProfile.genres.map(g => g.replace('-', ' ')).join(', ') : 'Not set'}
+• Goals: ${userProfile.goals ? userProfile.goals.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not set'}
+• Practice Frequency: ${userProfile.frequency ? userProfile.frequency.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not set'}`;
+
+    alert(profileText);
+}
+
+function editProfile() {
+    const confirmEdit = confirm('This will take you back to the onboarding questions to update your preferences. Continue?');
+    if (confirmEdit) {
+        // Keep the profile but mark as incomplete so they can edit
+        userProfile.completedOnboarding = false;
+        saveUserProfile();
+        
+        // Go back to first question
+        currentStep = 1;
+        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+        document.getElementById('step-skill').classList.add('active');
+    }
+}
+
+function updateProfileSummary() {
+    const summaryElement = document.getElementById('profile-summary');
+    if (summaryElement && userProfile.completedOnboarding) {
+        const skillText = userProfile.skill ? userProfile.skill.replace('-', ' ') : 'any level';
+        const genreText = userProfile.genres && userProfile.genres.length > 0 ? 
+            userProfile.genres.slice(0, 2).map(g => g.replace('-', ' ')).join(' & ') : 'all genres';
+        
+        summaryElement.textContent = `Personalized for ${skillText} level, focusing on ${genreText}`;
+    }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', initializeApp);

@@ -153,8 +153,16 @@
         <!-- Step 5: Personalized Lesson Flow -->
         <div class="step" id="step-lessons">
             <div class="content-card full-width">
-                <h2>Your Personalized DJ Journey</h2>
-                <p class="subtitle">Based on your preferences, here's your custom learning path</p>
+                <div class="lesson-header">
+                    <div>
+                        <h2>Your Personalized DJ Journey</h2>
+                        <p class="subtitle" id="profile-summary">Based on your preferences, here's your custom learning path</p>
+                    </div>
+                    <div class="profile-actions">
+                        <button class="btn-secondary" onclick="showProfile()">View Profile</button>
+                        <button class="btn-secondary" onclick="editProfile()">Edit Preferences</button>
+                    </div>
+                </div>
                 
                 <div class="lesson-path" id="lesson-path">
                     <!-- Dynamically generated lesson flow will appear here -->

@@ -426,8 +426,7 @@
         }
         
         function backToLessons() {
-            window.location.href = 'index.html#step-lessons';
-        }
+            // Check if user has completed onboarding and should return to lessons\n            const savedProfile = localStorage.getItem('tribexr-user-profile');\n            if (savedProfile) {\n                const profile = JSON.parse(savedProfile);\n                if (profile.completedOnboarding) {\n                    // Return directly to lessons page\n                    window.location.href = 'index.html?skipToLessons=true';\n                    return;\n                }\n            }\n            \n            // Fallback to regular index\n            window.location.href = 'index.html';\n        }
         
         function loadRelatedLessons(currentLesson) {
             const related = lessons.filter(lesson => 
