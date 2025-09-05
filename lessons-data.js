@@ -1,4 +1,23 @@
 const lessons = [
+    // Welcome to DJing
+    {
+        name: "Welcome to DJing",
+        skill: "Introduction",
+        difficulty: "Easy",
+        equipment: "Any",
+        genre: "All Genres",
+        rating: 5,
+        link: "https://www.youtube.com/watch?v=huU40BIH2lA"
+    },
+    {
+        name: "Understanding DJ Equipment",
+        skill: "Equipment",
+        difficulty: "Easy",
+        equipment: "Any",
+        genre: "All Genres",
+        rating: 5,
+        link: "https://www.youtube.com/watch?v=MXw4DnEJYLI"
+    },
     // Beginner - Counting Beats and Bars
     {
         name: "Introduction to Beats and Bars",

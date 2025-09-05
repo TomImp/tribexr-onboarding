@@ -116,28 +116,28 @@ function generatePersonalizedPath() {
     if (userProfile.skill === 'first-timer' || userProfile.skill === 'beginner') {
         lessonFlow = [
             { 
-                title: 'Introduction to Beats and Bars', 
-                description: 'Learn the foundation of music structure',
+                title: 'Welcome to DJing', 
+                description: 'Introduction to the world of DJing',
                 type: 'Video Tutorial',
                 difficulty: 'easy',
                 duration: '10 mins',
                 lessonIndex: 0
             },
             {
-                title: 'Beat Matching Basics with CDJ-3000',
-                description: 'Master the art of syncing tracks',
+                title: 'Understanding DJ Equipment',
+                description: 'Learn about CDJs, mixers, and controllers',
                 type: 'Interactive Lesson',
                 difficulty: 'easy',
                 duration: '15 mins',
-                lessonIndex: 4
+                lessonIndex: 1
             },
             {
-                title: 'EQ Basics on DJM-900NXS2',
-                description: 'Learn to blend tracks seamlessly with EQ',
+                title: 'Introduction to Beats and Bars',
+                description: 'Learn the foundation of music structure',
                 type: 'Practice Exercise',
                 difficulty: 'easy',
                 duration: '12 mins',
-                lessonIndex: 9
+                lessonIndex: 2
             }
         ];
     } else if (userProfile.skill === 'intermediate') {
@@ -148,7 +148,7 @@ function generatePersonalizedPath() {
                 type: 'Practice Exercise',
                 difficulty: 'medium',
                 duration: '18 mins',
-                lessonIndex: 5
+                lessonIndex: 7
             },
             {
                 title: 'Bass Swapping in Tech House',
@@ -156,7 +156,7 @@ function generatePersonalizedPath() {
                 type: 'Interactive Lesson',
                 difficulty: 'medium',
                 duration: '20 mins',
-                lessonIndex: 11
+                lessonIndex: 13
             },
             {
                 title: 'Harmonic Mixing Basics',
@@ -164,7 +164,7 @@ function generatePersonalizedPath() {
                 type: 'Masterclass',
                 difficulty: 'medium',
                 duration: '25 mins',
-                lessonIndex: 26
+                lessonIndex: 28
             }
         ];
     } else {
@@ -175,7 +175,7 @@ function generatePersonalizedPath() {
                 type: 'Masterclass',
                 difficulty: 'hard',
                 duration: '30 mins',
-                lessonIndex: 31
+                lessonIndex: 33
             },
             {
                 title: 'Reading the Crowd',
@@ -183,7 +183,7 @@ function generatePersonalizedPath() {
                 type: 'Video Tutorial',
                 difficulty: 'hard',
                 duration: '25 mins',
-                lessonIndex: 32
+                lessonIndex: 34
             },
             {
                 title: 'Peak Time Energy Management',
@@ -191,7 +191,7 @@ function generatePersonalizedPath() {
                 type: 'Workshop',
                 difficulty: 'hard',
                 duration: '35 mins',
-                lessonIndex: 34
+                lessonIndex: 36
             }
         ];
     }
@@ -203,7 +203,7 @@ function generatePersonalizedPath() {
             type: 'Career Guide',
             difficulty: 'medium',
             duration: '20 mins',
-            lessonIndex: 45
+            lessonIndex: 47
         });
     }
     
