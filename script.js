@@ -414,7 +414,44 @@ function initializeApp() {
         // Don't change the current step - let user start normally
     }
     // If no profile at all, just show welcome screen (default)
-}\n\n// Restore user selections in the UI\nfunction restoreUserSelections() {\n    // Restore skill selection\n    if (userProfile.skill) {\n        const skillElement = document.querySelector(`[data-value=\"${userProfile.skill}\"]`);\n        if (skillElement) skillElement.classList.add('selected');\n    }\n    \n    // Restore genre selections\n    if (userProfile.genres && userProfile.genres.length > 0) {\n        userProfile.genres.forEach(genre => {\n            const genreElement = document.querySelector(`[data-value=\"${genre}\"]`);\n            if (genreElement) genreElement.classList.add('selected');\n        });\n        \n        // Enable genre next button\n        const genreNextBtn = document.getElementById('genre-next');\n        if (genreNextBtn) {\n            genreNextBtn.disabled = false;\n        }\n    }\n    \n    // Restore goals selection\n    if (userProfile.goals) {\n        const goalsElement = document.querySelector(`[data-value=\"${userProfile.goals}\"]`);\n        if (goalsElement) goalsElement.classList.add('selected');\n    }\n    \n    // Restore frequency selection\n    if (userProfile.frequency) {\n        const frequencyElement = document.querySelector(`[data-value=\"${userProfile.frequency}\"]`);\n        if (frequencyElement) frequencyElement.classList.add('selected');\n    }\n}\n\n// Profile management functions
+}
+
+// Restore user selections in the UI
+function restoreUserSelections() {
+    // Restore skill selection
+    if (userProfile.skill) {
+        const skillElement = document.querySelector(`[data-value="${userProfile.skill}"]`);
+        if (skillElement) skillElement.classList.add('selected');
+    }
+    
+    // Restore genre selections
+    if (userProfile.genres && userProfile.genres.length > 0) {
+        userProfile.genres.forEach(genre => {
+            const genreElement = document.querySelector(`[data-value="${genre}"]`);
+            if (genreElement) genreElement.classList.add('selected');
+        });
+        
+        // Enable genre next button
+        const genreNextBtn = document.getElementById('genre-next');
+        if (genreNextBtn) {
+            genreNextBtn.disabled = false;
+        }
+    }
+    
+    // Restore goals selection
+    if (userProfile.goals) {
+        const goalsElement = document.querySelector(`[data-value="${userProfile.goals}"]`);
+        if (goalsElement) goalsElement.classList.add('selected');
+    }
+    
+    // Restore frequency selection
+    if (userProfile.frequency) {
+        const frequencyElement = document.querySelector(`[data-value="${userProfile.frequency}"]`);
+        if (frequencyElement) frequencyElement.classList.add('selected');
+    }
+}
+
+// Profile management functions
 function showProfile() {
     const profileText = `Your DJ Profile:
     
