@@ -302,10 +302,15 @@
         }
         
         function loadLesson(index) {
-            if (index < 0 || index >= lessons.length) return;
+            if (!lessons || index < 0 || index >= lessons.length) {
+                console.error('Invalid lesson index or lessons not loaded:', index, lessons?.length);
+                return;
+            }
             
             currentLessonIndex = index;
             const lesson = lessons[index];
+            
+            console.log('Loading lesson:', lesson.name, 'Link:', lesson.link);
             
             // Update URL without reloading
             const newUrl = `${window.location.pathname}?lesson=${index}`;
@@ -313,6 +318,14 @@
             
             // Update video
             const videoId = extractVideoId(lesson.link);
+            console.log('Extracted video ID:', videoId);
+            
+            if (!videoId) {
+                console.error('Could not extract video ID from:', lesson.link);
+                document.getElementById('lesson-title').textContent = `Error: Invalid video link - ${lesson.name}`;
+                return;
+            }
+            
             document.getElementById('video-frame').src = `https://www.youtube.com/embed/${videoId}?rel=0`;
             
             // Update lesson details
@@ -349,8 +362,19 @@
         }
         
         function extractVideoId(url) {
-            const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/);
-            return match ? match[1] : '';
+            if (!url) return '';
+            
+            // Handle various YouTube URL formats
+            let match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+            
+            if (!match) {
+                // Try to extract from the end if it's just a video ID
+                match = url.match(/([a-zA-Z0-9_-]{11})$/);
+            }
+            
+            const videoId = match ? match[1] : '';
+            console.log('Video ID extraction:', url, '->', videoId);
+            return videoId;
         }
         
         function setRating(rating) {
@@ -426,7 +450,20 @@
         }
         
         function backToLessons() {
-            // Check if user has completed onboarding and should return to lessons\n            const savedProfile = localStorage.getItem('tribexr-user-profile');\n            if (savedProfile) {\n                const profile = JSON.parse(savedProfile);\n                if (profile.completedOnboarding) {\n                    // Return directly to lessons page\n                    window.location.href = 'index.html?skipToLessons=true';\n                    return;\n                }\n            }\n            \n            // Fallback to regular index\n            window.location.href = 'index.html';\n        }
+            // Check if user has completed onboarding and should return to lessons
+            const savedProfile = localStorage.getItem('tribexr-user-profile');
+            if (savedProfile) {
+                const profile = JSON.parse(savedProfile);
+                if (profile.completedOnboarding) {
+                    // Return directly to lessons page
+                    window.location.href = 'index.html?skipToLessons=true';
+                    return;
+                }
+            }
+            
+            // Fallback to regular index
+            window.location.href = 'index.html';
+        }
         
         function loadRelatedLessons(currentLesson) {
             const related = lessons.filter(lesson => 
@@ -448,8 +485,25 @@
             }).join('');
         }
         
-        // Initialize
-        loadLesson(currentLessonIndex);
+        // Initialize - wait for lessons data to be available
+        function initializeLessonViewer() {
+            // Check if lessons data is available
+            if (typeof lessons === 'undefined' || !lessons || lessons.length === 0) {
+                console.error('Lessons data not loaded');
+                document.getElementById('lesson-title').textContent = 'Error loading lesson data';
+                return;
+            }
+            
+            console.log('Lessons loaded:', lessons.length, 'lessons');
+            loadLesson(currentLessonIndex);
+        }
+        
+        // Wait for DOM and scripts to load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeLessonViewer);
+        } else {
+            initializeLessonViewer();
+        }
     </script>
 </body>
 </html>
