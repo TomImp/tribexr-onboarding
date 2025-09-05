@@ -7,7 +7,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=fFCjdS_LVmE"
+        link: "https://www.youtube.com/watch?v=ZqGUt1U8gPo"
     },
     {
         name: "Counting 4/4 Time in House Music",
@@ -16,7 +16,7 @@ const lessons = [
         equipment: "Any",
         genre: "House",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=xV8GB7X4hh8"
+        link: "https://www.youtube.com/watch?v=P2s2dxhpcd4"
     },
     {
         name: "Understanding BPM in EDM",
@@ -25,7 +25,7 @@ const lessons = [
         equipment: "Any",
         genre: "EDM",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
+        link: "https://www.youtube.com/watch?v=PfNkgcbOyPk"
     },
     {
         name: "Techno Rhythm Patterns",
@@ -34,7 +34,7 @@ const lessons = [
         equipment: "Any",
         genre: "Techno",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=yYqJ6Jow3is"
+        link: "https://www.youtube.com/watch?v=g47xmHiQg4"
     },
     
     // Beat Matching
@@ -45,7 +45,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "House",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=9JqVOSnRiUU"
+        link: "https://www.youtube.com/watch?v=PVYy5ipshe8"
     },
     {
         name: "Manual Beat Matching on CDJ-2000",
@@ -54,7 +54,7 @@ const lessons = [
         equipment: "CDJ-2000",
         genre: "Tech House",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=z01ztP-BDGQ"
+        link: "https://www.youtube.com/watch?v=Mnp8hQElYp8"
     },
     {
         name: "Beat Matching Hip Hop Tracks",
@@ -63,7 +63,7 @@ const lessons = [
         equipment: "DDJ-FLX4",
         genre: "Hip Hop / R&B",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=4Tf3vz7ibok"
+        link: "https://www.youtube.com/watch?v=M9a6tTPFEqw"
     },
     {
         name: "Advanced Beat Matching with Vinyl",
@@ -72,7 +72,7 @@ const lessons = [
         equipment: "Turntables",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=uFGX9Mrt5mc"
+        link: "https://www.youtube.com/watch?v=IPMaEb_CBLU"
     },
     {
         name: "Beat Grid Analysis in rekordbox",
@@ -81,7 +81,7 @@ const lessons = [
         equipment: "rekordbox",
         genre: "All Genres",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=X-Ju9n_C1Yw"
+        link: "https://www.youtube.com/watch?v=tFXw5FL6P7o"
     },
     
     // EQ Techniques
@@ -92,7 +92,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=QEK7zj_QXz8"
+        link: "https://www.youtube.com/watch?v=J-_j3-YsCN0"
     },
     {
         name: "Creative EQ Mixing in House",
@@ -101,7 +101,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "House",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=NVHdPMIr6ak"
+        link: "https://www.youtube.com/watch?v=tHNiVCqHvj4"
     },
     {
         name: "Bass Swapping in Tech House",
@@ -110,7 +110,7 @@ const lessons = [
         equipment: "DJM-A9",
         genre: "Tech House",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=fILMfnH_6fQ"
+        link: "https://www.youtube.com/watch?v=Dmb5GmLkbrY"
     },
     {
         name: "3-Band EQ Mastery",
@@ -119,7 +119,7 @@ const lessons = [
         equipment: "DJM-V10",
         genre: "Techno",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=0-2Uo8g61lE"
+        link: "https://www.youtube.com/watch?v=1xhTHnSnnyg"
     },
     {
         name: "EQ Transitions for EDM Drops",
@@ -128,7 +128,7 @@ const lessons = [
         equipment: "DDJ-FLX10",
         genre: "EDM",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=m10KBeYFNsE"
+        link: "https://www.youtube.com/watch?v=s2QCwH4m4no"
     },
     
     // Effects
@@ -139,7 +139,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=3rKhunJ1aM8"
+        link: "https://www.youtube.com/watch?v=IJ2YnIR9wp4"
     },
     {
         name: "Using Reverb and Delay",
@@ -148,7 +148,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "House",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=Y0i5_h4pMxc"
+        link: "https://www.youtube.com/watch?v=FhjEEMJO9a0"
     },
     {
         name: "Color FX on Pioneer Mixers",
@@ -157,7 +157,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=_9MIgVr_WKs"
+        link: "https://www.youtube.com/watch?v=h_JlrW9QkRI"
     },
     {
         name: "Beat FX for Techno",
@@ -166,7 +166,7 @@ const lessons = [
         equipment: "DJM-V10",
         genre: "Techno",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=1zXuX_XpKp8"
+        link: "https://www.youtube.com/watch?v=Cl84tMA_FeU"
     },
     {
         name: "Creative Filter Use in EDM",
@@ -175,7 +175,7 @@ const lessons = [
         equipment: "DDJ-FLX6",
         genre: "EDM",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=aRsWk4JZa5k"
+        link: "https://www.youtube.com/watch?v=iIojtzbuPM4"
     },
     
     // Scratching
@@ -186,7 +186,7 @@ const lessons = [
         equipment: "Turntables",
         genre: "Hip Hop / R&B",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=C7KyBu15ZGk"
+        link: "https://www.youtube.com/watch?v=GwRKdXImmYo"
     },
     {
         name: "Chirp Scratch Technique",
@@ -195,7 +195,7 @@ const lessons = [
         equipment: "DDJ-REV7",
         genre: "Hip Hop / R&B",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=t9vLv0CYgQY"
+        link: "https://www.youtube.com/watch?v=8FMoLxADxZk"
     },
     {
         name: "Transform Scratch Mastery",
@@ -204,7 +204,7 @@ const lessons = [
         equipment: "DDJ-REV7",
         genre: "Hip Hop / R&B",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=SFe7_RrVKGc"
+        link: "https://www.youtube.com/watch?v=2lWStxRZP3A"
     },
     {
         name: "Scratch Patterns for EDM",
@@ -213,7 +213,7 @@ const lessons = [
         equipment: "DDJ-SX3",
         genre: "EDM",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=7KXjzB5J4oE"
+        link: "https://www.youtube.com/watch?v=mbjL3rIxeLo"
     },
     
     // Mixing Techniques
@@ -224,7 +224,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "House",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=qJIF6YeMhQE"
+        link: "https://www.youtube.com/watch?v=CTiFony36zs"
     },
     {
         name: "Energy Building in Tech House",
@@ -233,7 +233,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "Tech House",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=QwYKQ9I4Uv0"
+        link: "https://www.youtube.com/watch?v=svCiiP_bROA"
     },
     {
         name: "Harmonic Mixing Basics",
@@ -242,7 +242,7 @@ const lessons = [
         equipment: "rekordbox",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=gvMTcvgTZFs"
+        link: "https://www.youtube.com/watch?v=gHnWc06EA10"
     },
     {
         name: "Long Blend Techno Mixing",
@@ -251,7 +251,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "Techno",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=2_-AiYz5VQU"
+        link: "https://www.youtube.com/watch?v=22XjZKJS69E"
     },
     {
         name: "Quick Mix Techniques for Commercial",
@@ -260,7 +260,7 @@ const lessons = [
         equipment: "DDJ-FLX4",
         genre: "Commercial",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=vW21KiHSRCo"
+        link: "https://www.youtube.com/watch?v=9bCCFLOpwOs"
     },
     
     // Loop and Cue Points
@@ -271,7 +271,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=N0MrHczj-0I"
+        link: "https://www.youtube.com/watch?v=TwvquKO7ytw"
     },
     {
         name: "Loop Roll Techniques",
@@ -280,7 +280,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "EDM",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=X1Hi6d4edz8"
+        link: "https://www.youtube.com/watch?v=m6oiL4L-HnM"
     },
     {
         name: "Creative Looping in Techno",
@@ -289,7 +289,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "Techno",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=7vTzWbK-VKo"
+        link: "https://www.youtube.com/watch?v=sa4hGzYdHwM"
     },
     
     // Performance Techniques
@@ -300,7 +300,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=KhfDbTI4BqM"
+        link: "https://www.youtube.com/watch?v=xi-X2lE6EqQ"
     },
     {
         name: "Building a DJ Set Structure",
@@ -309,7 +309,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=9x2NaGkl6BI"
+        link: "https://www.youtube.com/watch?v=hjkTkb-_7mQ"
     },
     {
         name: "Peak Time Energy Management",
@@ -318,7 +318,7 @@ const lessons = [
         equipment: "Any",
         genre: "House",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=9iHW7Sg1vdQ"
+        link: "https://www.youtube.com/watch?v=leNKbsS9TVM"
     },
     
     // Equipment Specific
@@ -329,7 +329,7 @@ const lessons = [
         equipment: "DDJ-FLX4",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=vCadcBR95oU"
+        link: "https://www.youtube.com/watch?v=KViP_3jpcfw"
     },
     {
         name: "CDJ-3000 Advanced Features",
@@ -338,7 +338,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=P7hi6ajAhJg"
+        link: "https://www.youtube.com/watch?v=EF7p8X8act0"
     },
     {
         name: "DJM-A9 Mixer Deep Dive",
@@ -347,7 +347,7 @@ const lessons = [
         equipment: "DJM-A9",
         genre: "All Genres",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=CfihYWRWRTg"
+        link: "https://www.youtube.com/watch?v=5qtiHGjTa8M"
     },
     {
         name: "XDJ-XZ All-in-One Setup",
@@ -356,7 +356,7 @@ const lessons = [
         equipment: "XDJ-XZ",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=T7QCSJJbv1g"
+        link: "https://www.youtube.com/watch?v=5Kvs4IM2zEU"
     },
     
     // Software
@@ -367,7 +367,7 @@ const lessons = [
         equipment: "rekordbox",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=XsFneCExKlc"
+        link: "https://www.youtube.com/watch?v=OqBw8LM8H4w"
     },
     {
         name: "Serato DJ Pro Fundamentals",
@@ -376,7 +376,7 @@ const lessons = [
         equipment: "Serato",
         genre: "All Genres",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=h5X4DUwggOE"
+        link: "https://www.youtube.com/watch?v=7L2TilBwpjE"
     },
     {
         name: "Track Analysis and Preparation",
@@ -385,7 +385,7 @@ const lessons = [
         equipment: "rekordbox",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=W8r-tXRLazs"
+        link: "https://www.youtube.com/watch?v=PH3glx97IGI"
     },
     
     // Genre Specific Advanced
@@ -396,7 +396,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "House",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=0OTGkNTqJP8"
+        link: "https://www.youtube.com/watch?v=2wrFSje4S1Y"
     },
     {
         name: "Techno Layering Techniques",
@@ -405,7 +405,7 @@ const lessons = [
         equipment: "Model 1 Mixer",
         genre: "Techno",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=7nJRGARveVc"
+        link: "https://www.youtube.com/watch?v=RlVtyYqga-c"
     },
     {
         name: "Hip Hop Turntablism",
@@ -414,7 +414,7 @@ const lessons = [
         equipment: "Turntables",
         genre: "Hip Hop / R&B",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=3rQvblU3w4w"
+        link: "https://www.youtube.com/watch?v=p8HWriRwyoo"
     },
     {
         name: "EDM Festival Mixing",
@@ -423,7 +423,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "EDM",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=hJdh5rg4X3s"
+        link: "https://www.youtube.com/watch?v=0KjfKBO3zAg"
     },
     
     // Business and Career
@@ -434,7 +434,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=I2r_qjQgGxI"
+        link: "https://www.youtube.com/watch?v=fAH0GMYwY1M"
     },
     {
         name: "Social Media for DJs",
@@ -443,7 +443,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=0mW2xDKzWQI"
+        link: "https://www.youtube.com/watch?v=tYAm0TV9XxA"
     },
     {
         name: "Getting Your First Gigs",
@@ -452,7 +452,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=yRjKQgLFFT8"
+        link: "https://www.youtube.com/watch?v=ffPQPMtvz8c"
     },
     {
         name: "DJ Contracts and Riders",
@@ -461,7 +461,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=nL9VdJ0rSgc"
+        link: "https://www.youtube.com/watch?v=n2wqARCauoE"
     },
     {
         name: "Recording and Streaming Sets",
@@ -470,6 +470,6 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=L3wKzyIN1yk"
+        link: "https://www.youtube.com/watch?v=oYqCcmanzzI"
     }
 ];
