@@ -7,7 +7,7 @@ const lessons = [
         equipment: "Any",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=sTSA_sWGM44"
+        link: "https://www.youtube.com/watch?v=fFCjdS_LVmE"
     },
     {
         name: "Counting 4/4 Time in House Music",
@@ -16,7 +16,7 @@ const lessons = [
         equipment: "Any",
         genre: "House",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=lDK9QqIzhwk"
+        link: "https://www.youtube.com/watch?v=xV8GB7X4hh8"
     },
     {
         name: "Understanding BPM in EDM",
@@ -25,7 +25,7 @@ const lessons = [
         equipment: "Any",
         genre: "EDM",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=Wga5A6R9BJg"
+        link: "https://www.youtube.com/watch?v=kJQP7kiw5Fk"
     },
     {
         name: "Techno Rhythm Patterns",
@@ -34,7 +34,7 @@ const lessons = [
         equipment: "Any",
         genre: "Techno",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=2_-AiYz5VQU"
+        link: "https://www.youtube.com/watch?v=yYqJ6Jow3is"
     },
     
     // Beat Matching
@@ -45,7 +45,7 @@ const lessons = [
         equipment: "CDJ-3000",
         genre: "House",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=fJ9rUzIMcZQ"
+        link: "https://www.youtube.com/watch?v=9JqVOSnRiUU"
     },
     {
         name: "Manual Beat Matching on CDJ-2000",
@@ -54,7 +54,7 @@ const lessons = [
         equipment: "CDJ-2000",
         genre: "Tech House",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=6p0DAz_30qQ"
+        link: "https://www.youtube.com/watch?v=z01ztP-BDGQ"
     },
     {
         name: "Beat Matching Hip Hop Tracks",
@@ -63,7 +63,7 @@ const lessons = [
         equipment: "DDJ-FLX4",
         genre: "Hip Hop / R&B",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=ZNlXhEO2lM8"
+        link: "https://www.youtube.com/watch?v=4Tf3vz7ibok"
     },
     {
         name: "Advanced Beat Matching with Vinyl",
@@ -72,7 +72,7 @@ const lessons = [
         equipment: "Turntables",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=Cvjz2_dFbmE"
+        link: "https://www.youtube.com/watch?v=uFGX9Mrt5mc"
     },
     {
         name: "Beat Grid Analysis in rekordbox",
@@ -81,7 +81,7 @@ const lessons = [
         equipment: "rekordbox",
         genre: "All Genres",
         rating: 4,
-        link: "https://www.youtube.com/watch?v=eqFZ5l3PIWA"
+        link: "https://www.youtube.com/watch?v=X-Ju9n_C1Yw"
     },
     
     // EQ Techniques
@@ -139,7 +139,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=yYqJ6Jow3is"
+        link: "https://www.youtube.com/watch?v=3rKhunJ1aM8"
     },
     {
         name: "Using Reverb and Delay",
@@ -157,7 +157,7 @@ const lessons = [
         equipment: "DJM-900NXS2",
         genre: "All Genres",
         rating: 5,
-        link: "https://www.youtube.com/watch?v=3rKhunJ1aM8"
+        link: "https://www.youtube.com/watch?v=_9MIgVr_WKs"
     },
     {
         name: "Beat FX for Techno",
