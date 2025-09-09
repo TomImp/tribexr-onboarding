@@ -129,11 +129,11 @@ body {
 
 .tagline {
     font-size: 36px;
-    letter-spacing: 24px;
+    letter-spacing: 12px;
     color: var(--text-secondary);
     text-transform: uppercase;
     font-weight: 600;
-    margin-top: 4px;
+    margin-top: 8px;
     width: 640px;
     text-align: center;
     white-space: nowrap;
