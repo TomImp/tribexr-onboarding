@@ -390,10 +390,312 @@ document.addEventListener('click', function(e) {
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', initializeMessaging);
 
+// Google API Configuration
+const GOOGLE_CONFIG = {
+    apiKey: 'YOUR_GOOGLE_API_KEY', // You'll need to get this from Google Cloud Console
+    clientId: 'YOUR_GOOGLE_CLIENT_ID', // You'll need to get this from Google Cloud Console
+    discoveryDocs: ['https://people.googleapis.com/$discovery/rest?version=v1'],
+    scope: 'https://www.googleapis.com/auth/contacts.readonly'
+};
+
+// Google API initialization
+let gapiInitialized = false;
+
+function initializeGoogleAPI() {
+    if (gapiInitialized) return Promise.resolve();
+    
+    return new Promise((resolve, reject) => {
+        gapi.load('client:auth2', () => {
+            gapi.client.init({
+                apiKey: GOOGLE_CONFIG.apiKey,
+                clientId: GOOGLE_CONFIG.clientId,
+                discoveryDocs: GOOGLE_CONFIG.discoveryDocs,
+                scope: GOOGLE_CONFIG.scope
+            }).then(() => {
+                gapiInitialized = true;
+                resolve();
+            }).catch(reject);
+        });
+    });
+}
+
+// Google Contacts Import
+async function importGoogleContacts() {
+    const button = document.getElementById('google-btn-text');
+    button.textContent = 'Connecting...';
+    
+    try {
+        // For demo purposes, we'll simulate the Google Contacts flow
+        // In production, you'd uncomment the real implementation below
+        
+        // Real implementation (requires API keys):
+        /*
+        await initializeGoogleAPI();
+        const authInstance = gapi.auth2.getAuthInstance();
+        const user = await authInstance.signIn();
+        
+        const response = await gapi.client.people.people.connections.list({
+            'resourceName': 'people/me',
+            'personFields': 'names,emailAddresses,phoneNumbers',
+        });
+        
+        const contacts = response.result.connections || [];
+        */
+        
+        // Demo implementation with mock data:
+        setTimeout(() => {
+            const mockContacts = [
+                {
+                    names: [{displayName: 'Sarah Johnson'}],
+                    emailAddresses: [{value: 'sarah.dj@email.com'}],
+                    phoneNumbers: [{value: '+1234567890'}]
+                },
+                {
+                    names: [{displayName: 'Mike Chen'}],
+                    emailAddresses: [{value: 'mike.beats@email.com'}],
+                    phoneNumbers: [{value: '+1987654321'}]
+                },
+                {
+                    names: [{displayName: 'Alex Rodriguez'}],
+                    emailAddresses: [{value: 'alex.mix@email.com'}],
+                    phoneNumbers: []
+                }
+            ];
+            
+            displayGoogleContacts(mockContacts);
+            button.textContent = 'Import Contacts';
+        }, 1500);
+        
+    } catch (error) {
+        console.error('Error importing contacts:', error);
+        alert('Unable to import contacts. This feature requires Google API setup.');
+        button.textContent = 'Import Contacts';
+    }
+}
+
+function displayGoogleContacts(contacts) {
+    const optionsDiv = document.querySelector('.add-friend-options');
+    const resultsDiv = document.getElementById('google-contacts-results');
+    const contactsList = document.getElementById('contacts-list');
+    
+    optionsDiv.style.display = 'none';
+    resultsDiv.style.display = 'block';
+    
+    contactsList.innerHTML = '';
+    
+    if (contacts.length === 0) {
+        contactsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No contacts found.</p>';
+        return;
+    }
+    
+    contacts.forEach((contact, index) => {
+        const name = contact.names?.[0]?.displayName || 'Unknown';
+        const email = contact.emailAddresses?.[0]?.value || '';
+        const phone = contact.phoneNumbers?.[0]?.value || '';
+        
+        const contactElement = document.createElement('div');
+        contactElement.className = 'contact-item';
+        contactElement.innerHTML = `
+            <div class="contact-info">
+                <div class="contact-name">${name}</div>
+                <div class="contact-detail">${email || phone || 'No contact info'}</div>
+            </div>
+            <button class="add-contact-btn" onclick="addContactAsFriend('${name}', '${email}', '${phone}')">
+                Add Friend
+            </button>
+        `;
+        
+        contactsList.appendChild(contactElement);
+    });
+}
+
+function hideGoogleResults() {
+    document.querySelector('.add-friend-options').style.display = 'block';
+    document.getElementById('google-contacts-results').style.display = 'none';
+}
+
+function addContactAsFriend(name, email, phone) {
+    // Create a new friend from contact
+    const newFriend = {
+        id: 'contact_' + Date.now(),
+        name: name,
+        avatar: '👤',
+        status: 'From contacts',
+        online: false,
+        lastMessage: '',
+        lastMessageTime: '',
+        email: email,
+        phone: phone
+    };
+    
+    friends.push(newFriend);
+    renderFriendsList();
+    
+    // Show success message
+    alert(`Added ${name} as a friend!`);
+    
+    // Close modals
+    hideGoogleResults();
+    closeAddFriendModal();
+}
+
+// QR Code Functions
+function showQRCode() {
+    const modal = document.getElementById('qr-code-modal');
+    const title = document.getElementById('qr-modal-title');
+    const instructions = document.getElementById('qr-instructions');
+    const scannerContainer = document.getElementById('qr-scanner-container');
+    
+    title.textContent = 'Your DJ QR Code';
+    instructions.textContent = 'Share this QR code with other DJs to connect instantly!';
+    scannerContainer.style.display = 'none';
+    
+    // Generate QR code with user info
+    const userInfo = {
+        type: 'tribexr_dj',
+        id: currentUser.id,
+        name: currentUser.name,
+        avatar: currentUser.avatar,
+        timestamp: Date.now()
+    };
+    
+    const qrData = JSON.stringify(userInfo);
+    
+    QRCode.toCanvas(document.getElementById('qr-code-canvas'), qrData, {
+        width: 200,
+        height: 200,
+        color: {
+            dark: '#000000',
+            light: '#FFFFFF'
+        }
+    }, function (error) {
+        if (error) {
+            console.error('QR Code generation error:', error);
+            alert('Error generating QR code');
+            return;
+        }
+        
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('show'), 10);
+    });
+    
+    closeAddFriendModal();
+}
+
+function scanQRCode() {
+    const modal = document.getElementById('qr-code-modal');
+    const title = document.getElementById('qr-modal-title');
+    const instructions = document.getElementById('qr-instructions');
+    const scannerContainer = document.getElementById('qr-scanner-container');
+    const qrContainer = document.getElementById('qr-code-container');
+    
+    title.textContent = 'Scan Friend\'s QR Code';
+    instructions.textContent = 'Upload a photo or screenshot of your friend\'s QR code:';
+    qrContainer.style.display = 'none';
+    scannerContainer.style.display = 'block';
+    
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+    
+    closeAddFriendModal();
+}
+
+function handleQRUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        // Create an image element to decode QR
+        const img = new Image();
+        img.onload = function() {
+            try {
+                // In a real implementation, you'd use a QR code decoder library
+                // For demo purposes, we'll simulate successful scanning
+                setTimeout(() => {
+                    const mockFriendData = {
+                        type: 'tribexr_dj',
+                        id: 'scanned_user_' + Date.now(),
+                        name: 'DJ Scanned',
+                        avatar: '🎵',
+                        timestamp: Date.now()
+                    };
+                    
+                    processScanResult(mockFriendData);
+                }, 1000);
+                
+                // Real implementation would use something like:
+                // const qrData = decodeQRCode(img);
+                // const friendData = JSON.parse(qrData);
+                // processScanResult(friendData);
+                
+            } catch (error) {
+                alert('Could not read QR code. Please try another image.');
+            }
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function processScanResult(friendData) {
+    if (friendData.type !== 'tribexr_dj') {
+        alert('This is not a valid TribeXR DJ QR code.');
+        return;
+    }
+    
+    // Check if friend already exists
+    const existingFriend = friends.find(f => f.id === friendData.id);
+    if (existingFriend) {
+        alert(`You're already friends with ${friendData.name}!`);
+        closeQRModal();
+        return;
+    }
+    
+    // Add new friend
+    const newFriend = {
+        id: friendData.id,
+        name: friendData.name,
+        avatar: friendData.avatar,
+        status: 'Added via QR code',
+        online: true,
+        lastMessage: '',
+        lastMessageTime: ''
+    };
+    
+    friends.push(newFriend);
+    renderFriendsList();
+    
+    alert(`Successfully added ${friendData.name} as a friend!`);
+    closeQRModal();
+}
+
+function closeQRModal() {
+    const modal = document.getElementById('qr-code-modal');
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+        document.getElementById('qr-code-container').style.display = 'flex';
+        document.getElementById('qr-scanner-container').style.display = 'none';
+        document.getElementById('qr-file-input').value = '';
+    }, 300);
+}
+
+// Close QR modal when clicking outside
+document.addEventListener('click', function(e) {
+    const qrModal = document.getElementById('qr-code-modal');
+    if (e.target === qrModal) {
+        closeQRModal();
+    }
+});
+
 // Export functions for potential integration with other parts of the app
 window.TribeMessaging = {
     selectFriend,
     sendMessage,
     loadFriends,
-    renderFriendsList
+    renderFriendsList,
+    importGoogleContacts,
+    showQRCode,
+    scanQRCode
 };
