@@ -849,7 +849,7 @@ tr:hover {
     background: rgba(255,255,255,0.1);
 }
 
-.profile-icon {
+.nav-icon, .profile-icon {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -878,6 +878,20 @@ tr:hover {
 }
 
 .profile-icon:hover svg {
+    color: var(--celebration);
+}
+.nav-icon:hover {
+    transform: scale(1.1);
+    border-color: var(--celebration);
+    box-shadow: 0 4px 20px rgba(243, 75, 106, 0.3);
+}
+.nav-icon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+}
+.nav-icon:hover svg {
     color: var(--celebration);
 }
 
