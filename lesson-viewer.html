@@ -235,6 +235,35 @@
             margin: 0;
         }
         
+        @keyframes confettiDrop {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(300px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes scoreFloatUp {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) translateY(10px);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1.1) translateY(-5px);
+            }
+            40% {
+                transform: scale(1) translateY(-10px);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(-30px);
+            }
+        }
+        
         @media (max-width: 768px) {
             .lesson-content {
                 grid-template-columns: 1fr;
@@ -474,17 +503,195 @@
             let userProfile = JSON.parse(localStorage.getItem('tribexr-user-profile')) || {
                 completedLessons: [],
                 djScore: 0,
-                completionPercentage: 0
+                completionPercentage: 0,
+                achievements: []
             };
             
             if (!userProfile.completedLessons.includes(lessonIndex)) {
+                const previousPercentage = userProfile.completionPercentage;
                 userProfile.completedLessons.push(lessonIndex);
-                userProfile.djScore += 10; // 10 points per lesson
+                const pointsEarned = 10; // 10 points per lesson
+                userProfile.djScore += pointsEarned;
                 userProfile.completionPercentage = Math.round((userProfile.completedLessons.length / 50) * 100); // 50 total lessons
+                
+                // Trigger celebration effects
+                triggerLessonViewerCelebration(pointsEarned);
+                
+                // Check for achievements
+                checkForViewerAchievements(previousPercentage, userProfile.completionPercentage, userProfile);
                 
                 // Save updated profile
                 localStorage.setItem('tribexr-user-profile', JSON.stringify(userProfile));
             }
+        }
+        
+        function triggerLessonViewerCelebration(pointsEarned) {
+            // Create confetti particles
+            createConfettiInViewer();
+            
+            // Show score increase animation
+            showScoreIncreaseInViewer(pointsEarned);
+        }
+        
+        function createConfettiInViewer() {
+            const colors = ['#FFD700', '#FF6347', '#32CD32', '#FF69B4', '#00BFFF'];
+            const confettiContainer = document.body;
+            
+            for (let i = 0; i < 12; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-particle';
+                confetti.style.position = 'fixed';
+                confetti.style.width = '8px';
+                confetti.style.height = '8px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = '50%';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = '20%';
+                confetti.style.zIndex = '1000';
+                confetti.style.pointerEvents = 'none';
+                confetti.style.animation = `confettiDrop ${Math.random() * 1 + 1.5}s ease-out forwards`;
+                
+                confettiContainer.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, 2500);
+            }
+        }
+        
+        function showScoreIncreaseInViewer(points) {
+            const ratingSection = document.querySelector('.rating-section');
+            const popup = document.createElement('div');
+            popup.innerHTML = `
+                <div style="
+                    position: absolute;
+                    top: -40px;
+                    right: -10px;
+                    background: #4CAF50;
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    z-index: 100;
+                    animation: scoreFloatUp 3s ease-out forwards;
+                    pointer-events: none;
+                ">+${points} DJ Points! 🎉</div>
+            `;
+            
+            ratingSection.style.position = 'relative';
+            ratingSection.appendChild(popup.firstElementChild);
+            
+            setTimeout(() => {
+                const popupElement = ratingSection.querySelector('[style*="scoreFloatUp"]');
+                if (popupElement && popupElement.parentNode) {
+                    popupElement.parentNode.removeChild(popupElement);
+                }
+            }, 3000);
+        }
+        
+        function checkForViewerAchievements(previousPercentage, currentPercentage, userProfile) {
+            const achievements = [
+                { threshold: 10, title: "First Steps", icon: "🎵", message: "Completed your first lesson!" },
+                { threshold: 25, title: "Getting Warmed Up", icon: "🔥", message: "25% progress - you're on fire!" },
+                { threshold: 50, title: "Halfway Hero", icon: "⭐", message: "50% complete - amazing progress!" },
+                { threshold: 75, title: "DJ Master", icon: "👑", message: "75% complete - you're becoming a pro!" },
+                { threshold: 100, title: "DJ Legend", icon: "🏆", message: "100% complete - you're a legend!" }
+            ];
+            
+            achievements.forEach(achievement => {
+                if (previousPercentage < achievement.threshold && currentPercentage >= achievement.threshold) {
+                    showViewerAchievementNotification(achievement);
+                    
+                    // Save achievement to profile
+                    if (!userProfile.achievements.some(a => a.title === achievement.title)) {
+                        userProfile.achievements.push({
+                            ...achievement,
+                            dateEarned: new Date().toISOString()
+                        });
+                    }
+                }
+            });
+            
+            // Special achievements based on lesson count
+            const lessonCount = userProfile.completedLessons.length;
+            const specialAchievements = [
+                { count: 1, title: "First Lesson", icon: "🎧", message: "Welcome to your DJ journey!" },
+                { count: 5, title: "Quick Learner", icon: "⚡", message: "5 lessons completed!" },
+                { count: 10, title: "Dedicated Student", icon: "📚", message: "10 lessons mastered!" },
+                { count: 20, title: "Skill Builder", icon: "🛠️", message: "20 lessons conquered!" }
+            ];
+            
+            specialAchievements.forEach(achievement => {
+                if (lessonCount === achievement.count) {
+                    showViewerAchievementNotification(achievement);
+                    
+                    if (!userProfile.achievements.some(a => a.title === achievement.title)) {
+                        userProfile.achievements.push({
+                            ...achievement,
+                            dateEarned: new Date().toISOString()
+                        });
+                    }
+                }
+            });
+        }
+        
+        function showViewerAchievementNotification(achievement) {
+            // Remove any existing notification
+            const existingNotification = document.querySelector('.achievement-notification-viewer');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            const notification = document.createElement('div');
+            notification.className = 'achievement-notification-viewer';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF6347 100%);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                font-weight: 600;
+                box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+                transform: translateX(400px);
+                opacity: 0;
+                transition: all 0.5s ease;
+                z-index: 2001;
+                max-width: 320px;
+            `;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center;">
+                    <span style="font-size: 24px; margin-right: 12px;">${achievement.icon}</span>
+                    <div>
+                        <div style="font-size: 16px; margin-bottom: 4px;">${achievement.title}</div>
+                        <div style="font-size: 14px; opacity: 0.9;">${achievement.message}</div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show notification with animation
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+                notification.style.opacity = '1';
+            }, 100);
+            
+            // Hide notification after 4 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(400px)';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 500);
+            }, 4000);
         }
         
         function updateThumbs(rating) {

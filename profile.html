@@ -34,10 +34,41 @@
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
         }
         
         .profile-picture:hover {
             transform: scale(1.05);
+        }
+        
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .upload-hint {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            font-size: 10px;
+            padding: 4px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .profile-picture:hover .upload-hint {
+            opacity: 1;
+        }
+        
+        .file-input {
+            display: none;
         }
         
         .dj-name {
@@ -193,7 +224,11 @@
         <a href="index.html?skipToLessons=true" class="back-btn">← Back to Lessons</a>
         
         <div class="profile-header">
-            <div class="profile-picture" onclick="changePicture()">🎧</div>
+            <div class="profile-picture" onclick="changePicture()" id="profile-picture">
+                <span id="profile-emoji">🎧</span>
+                <div class="upload-hint">Click to change</div>
+            </div>
+            <input type="file" id="profile-image-input" class="file-input" accept="image/*" onchange="handleImageUpload(event)">
             <h1 class="dj-name" id="dj-name" onclick="editName()">DJ Beginner</h1>
             <p class="profile-level" id="profile-level">Beginner Level DJ</p>
         </div>
@@ -243,7 +278,9 @@
                     completedLessons: [],
                     djScore: 0,
                     completionPercentage: 0,
-                    skill: 'beginner'
+                    skill: 'beginner',
+                    profileEmoji: '🎧',
+                    profileImage: null
                 }, ...JSON.parse(savedProfile) };
             } else {
                 userProfile = {
@@ -251,7 +288,9 @@
                     completedLessons: [],
                     djScore: 0,
                     completionPercentage: 0,
-                    skill: 'beginner'
+                    skill: 'beginner',
+                    profileEmoji: '🎧',
+                    profileImage: null
                 };
             }
             updateProfileDisplay();
@@ -275,8 +314,38 @@
             const skillText = userProfile.skill ? userProfile.skill.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Beginner';
             document.getElementById('profile-level').textContent = `${skillText} Level DJ`;
             
+            // Update profile picture
+            updateProfilePicture();
+            
             // Update achievements
             updateAchievements();
+        }
+        
+        // Update profile picture display
+        function updateProfilePicture() {
+            const pictureContainer = document.getElementById('profile-picture');
+            const emojiElement = document.getElementById('profile-emoji');
+            
+            if (userProfile.profileImage) {
+                // Show uploaded image
+                if (!pictureContainer.querySelector('img')) {
+                    const img = document.createElement('img');
+                    img.src = userProfile.profileImage;
+                    img.alt = 'Profile Picture';
+                    pictureContainer.insertBefore(img, emojiElement);
+                } else {
+                    pictureContainer.querySelector('img').src = userProfile.profileImage;
+                }
+                emojiElement.style.display = 'none';
+            } else {
+                // Show emoji
+                const img = pictureContainer.querySelector('img');
+                if (img) {
+                    img.remove();
+                }
+                emojiElement.style.display = 'block';
+                emojiElement.textContent = userProfile.profileEmoji || '🎧';
+            }
         }
         
         // Update achievements based on progress
@@ -342,13 +411,75 @@
             });
         }
         
-        // Change profile picture (placeholder function)
+        // Change profile picture
         function changePicture() {
-            const pictures = ['🎧', '🎵', '🎶', '🎤', '🔥', '⭐', '🚀', '💿'];
-            const current = document.querySelector('.profile-picture').textContent;
-            const currentIndex = pictures.indexOf(current);
-            const nextIndex = (currentIndex + 1) % pictures.length;
-            document.querySelector('.profile-picture').textContent = pictures[nextIndex];
+            // Show options dialog
+            const options = [
+                { type: 'upload', text: 'Upload Image 📷' },
+                { type: 'emoji', text: 'Choose Emoji' },
+                { type: 'remove', text: 'Remove Image ❌', show: !!userProfile.profileImage }
+            ];
+            
+            let optionsText = 'Choose an option:\n\n';
+            optionsText += options.filter(opt => opt.show !== false).map((opt, i) => `${i + 1}. ${opt.text}`).join('\n');
+            
+            const choice = prompt(optionsText);
+            const choiceNum = parseInt(choice);
+            
+            if (choiceNum === 1) {
+                // Upload image
+                document.getElementById('profile-image-input').click();
+            } else if (choiceNum === 2) {
+                // Choose emoji
+                chooseEmoji();
+            } else if (choiceNum === 3 && userProfile.profileImage) {
+                // Remove image
+                userProfile.profileImage = null;
+                localStorage.setItem('tribexr-user-profile', JSON.stringify(userProfile));
+                updateProfilePicture();
+            }
+        }
+        
+        // Choose emoji
+        function chooseEmoji() {
+            const emojis = ['🎧', '🎵', '🎶', '🎤', '🔥', '⭐', '🚀', '💿', '🎸', '🎹', '🥳', '😎', '🤘', '👨‍🎤', '👩‍🎤'];
+            const emojiOptions = emojis.map((emoji, i) => `${i + 1}. ${emoji}`).join('\n');
+            
+            const choice = prompt(`Choose an emoji:\n\n${emojiOptions}`);
+            const choiceNum = parseInt(choice);
+            
+            if (choiceNum >= 1 && choiceNum <= emojis.length) {
+                userProfile.profileEmoji = emojis[choiceNum - 1];
+                userProfile.profileImage = null; // Clear image when selecting emoji
+                localStorage.setItem('tribexr-user-profile', JSON.stringify(userProfile));
+                updateProfilePicture();
+            }
+        }
+        
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Check file size (limit to 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Please choose an image smaller than 2MB.');
+                return;
+            }
+            
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please choose a valid image file.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                userProfile.profileImage = e.target.result;
+                localStorage.setItem('tribexr-user-profile', JSON.stringify(userProfile));
+                updateProfilePicture();
+            };
+            reader.readAsDataURL(file);
         }
         
         // Initialize on page load

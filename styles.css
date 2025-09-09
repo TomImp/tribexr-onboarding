@@ -10,6 +10,8 @@
     --border-color: #333333;
     --success: #4CAF50;
     --warning: #FF9800;
+    --celebration: #FFD700;
+    --celebration-gradient: linear-gradient(45deg, #FFD700 0%, #FFA500 50%, #FF6347 100%);
 }
 
 * {
@@ -55,10 +57,64 @@ body {
     }
 }
 
+@keyframes celebration {
+    0% { 
+        transform: scale(1) rotate(0deg);
+        filter: brightness(1);
+    }
+    25% { 
+        transform: scale(1.1) rotate(-5deg);
+        filter: brightness(1.2);
+    }
+    50% { 
+        transform: scale(1.05) rotate(5deg);
+        filter: brightness(1.4);
+    }
+    75% { 
+        transform: scale(1.02) rotate(-2deg);
+        filter: brightness(1.1);
+    }
+    100% { 
+        transform: scale(1) rotate(0deg);
+        filter: brightness(1);
+    }
+}
+
+@keyframes confetti {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes scoreIncrease {
+    0% {
+        transform: scale(1);
+        color: var(--text-primary);
+    }
+    50% {
+        transform: scale(1.3);
+        color: var(--celebration);
+    }
+    100% {
+        transform: scale(1);
+        color: var(--success);
+    }
+}
+
 .logo {
     text-align: center;
     margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
 
 .logo h1 {
     font-size: 48px;
@@ -72,10 +128,16 @@ body {
 }
 
 .tagline {
-    font-size: 14px;
-    letter-spacing: 4px;
+    font-size: 48px;
+    letter-spacing: 35px;
     color: var(--text-secondary);
     text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 4px;
+    width: 640px;
+    text-align: left;
+    padding-left: 0;
+    text-indent: 12px;
 }
 
 .progress-bar {
@@ -279,6 +341,13 @@ p {
     border-radius: 12px;
 }
 
+.lesson-path.horizontal {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 100%;
+}
+
 .lesson-step {
     display: flex;
     align-items: center;
@@ -293,6 +362,78 @@ p {
 .lesson-step:hover {
     background: rgba(255,255,255,0.08);
     transform: translateX(8px);
+}
+
+.lesson-path.horizontal .lesson-step {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+    padding: 24px;
+    min-height: 320px;
+    justify-content: flex-start;
+    border-left: none;
+    border-top: 4px solid var(--accent-primary);
+}
+
+.lesson-path.horizontal .lesson-step:hover {
+    transform: translateY(-4px);
+}
+
+.lesson-path.horizontal .lesson-step .step-number {
+    position: relative;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+}
+
+.lesson-path.horizontal .lesson-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 16px;
+}
+
+.lesson-path.horizontal .lesson-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.lesson-path.horizontal .lesson-info h4 {
+    font-size: 16px;
+    margin: 0;
+    text-align: center;
+    flex: 1;
+}
+
+.lesson-path.horizontal .lesson-info p {
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.lesson-path.horizontal .lesson-button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.lesson-path.horizontal .lesson-meta {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.lesson-path.horizontal .meta-badge {
+    font-size: 11px;
+    padding: 4px 8px;
 }
 
 .step-number {
@@ -359,17 +500,33 @@ p {
 
 .lesson-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 16px;
+    gap: 8px;
+}
+
+.lesson-header > div:first-child {
+    width: 100%;
+    max-width: 600px;
+}
+
+.lesson-header > div:first-child h2 {
+    margin-bottom: 8px;
+    font-size: 28px;
+}
+
+.lesson-header .subtitle {
+    margin-bottom: 0;
+    font-size: 14px;
 }
 
 .profile-actions {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .profile-actions .btn-secondary {
@@ -483,8 +640,8 @@ tr:hover {
 }
 
 .btn-small {
-    padding: 8px 16px;
-    font-size: 12px;
+    padding: 10px 18px;
+    font-size: 13px;
     background: var(--accent-gradient);
     border: none;
     border-radius: 6px;
@@ -493,11 +650,26 @@ tr:hover {
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
+    min-width: 80px;
+    text-align: center;
 }
 
 .btn-small:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(243, 75, 106, 0.3);
+}
+
+.btn-small.btn-completed {
+    background: var(--success) !important;
+    color: white !important;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-small.btn-completed:hover {
+    background: #45a049 !important;
+    transform: scale(1.05);
 }
 
 /* Lesson Start Buttons */
@@ -511,6 +683,9 @@ tr:hover {
     transition: all 0.3s ease;
     margin-top: 15px;
     min-width: 140px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .lesson-start-btn.btn-primary {
@@ -526,12 +701,14 @@ tr:hover {
 .lesson-start-btn.btn-completed {
     background: var(--success);
     color: white;
-    cursor: default;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .lesson-start-btn.btn-completed:hover {
-    transform: none;
-    box-shadow: none;
+    background: #45a049;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
 }
 
 /* Completed lesson styling */
@@ -595,9 +772,33 @@ tr:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
+    padding: 15px 0;
     margin-bottom: 20px;
     border-bottom: 1px solid var(--border-color);
+    min-height: 140px;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.nav-logo-img {
+    width: 320px;
+    height: 120px;
+    display: block;
+    filter: brightness(1);
+    object-fit: contain;
+}
+
+.main-logo {
+    width: 640px;
+    height: 240px;
+    margin-bottom: 16px;
+    display: block;
+    filter: brightness(1);
+    object-fit: contain;
 }
 
 .nav-logo h1 {
@@ -610,9 +811,12 @@ tr:hover {
 }
 
 .nav-logo p {
-    font-size: 12px;
+    font-size: 16px;
     color: var(--text-secondary);
     margin: 0;
+    margin-left: 0;
+    letter-spacing: 2px;
+    font-weight: 600;
 }
 
 .nav-buttons {
@@ -643,6 +847,38 @@ tr:hover {
 .nav-tab:hover:not(.active) {
     color: var(--text-primary);
     background: rgba(255,255,255,0.1);
+}
+
+.profile-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid var(--accent-primary);
+    background: var(--bg-secondary);
+    margin-left: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-icon:hover {
+    transform: scale(1.1);
+    border-color: var(--celebration);
+    box-shadow: 0 4px 20px rgba(243, 75, 106, 0.3);
+}
+
+.profile-icon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+}
+
+.profile-icon:hover svg {
+    color: var(--celebration);
 }
 
 /* Main Sections */
@@ -766,6 +1002,11 @@ tr:hover {
         text-align: center;
     }
     
+    .lesson-header {
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
     .table-wrapper {
         font-size: 12px;
     }
@@ -790,6 +1031,12 @@ tr:hover {
         font-size: 13px;
     }
     
+    .profile-icon {
+        width: 40px;
+        height: 40px;
+        margin-left: 12px;
+    }
+    
     .performance-content {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -802,4 +1049,294 @@ tr:hover {
     .placeholder-icon {
         font-size: 48px;
     }
+    
+    .lesson-path.horizontal {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .lesson-path.horizontal .lesson-step {
+        min-height: 220px;
+        padding: 20px;
+    }
+}
+
+/* Celebration and Enhanced Feedback Styles */
+.lesson-completed-celebration {
+    animation: celebration 0.8s ease-in-out;
+}
+
+.confetti-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--celebration);
+    border-radius: 50%;
+    animation: confetti 2s ease-out forwards;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.confetti-particle:nth-child(1) { background: #FFD700; }
+.confetti-particle:nth-child(2) { background: #FF6347; }
+.confetti-particle:nth-child(3) { background: #32CD32; }
+.confetti-particle:nth-child(4) { background: #FF69B4; }
+.confetti-particle:nth-child(5) { background: #00BFFF; }
+
+.score-increase {
+    animation: scoreIncrease 0.6s ease-in-out;
+}
+
+.progress-milestone {
+    position: relative;
+    overflow: visible;
+}
+
+.progress-milestone::after {
+    content: "🎉";
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    animation: celebration 1s ease-in-out;
+    pointer-events: none;
+}
+
+.lesson-step.just-completed {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid var(--success);
+    animation: celebration 0.8s ease-in-out;
+}
+
+.lesson-step.just-completed .step-number {
+    background: var(--success);
+    animation: scoreIncrease 0.6s ease-in-out;
+}
+
+.achievement-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--celebration-gradient);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.5s ease;
+    z-index: 1001;
+}
+
+.achievement-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.achievement-notification .achievement-icon {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.dj-score-container {
+    position: relative;
+    display: inline-block;
+}
+
+.score-popup {
+    position: absolute;
+    top: -30px;
+    right: -20px;
+    background: var(--success);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transform: scale(0.5) translateY(10px);
+    animation: scorePopup 2s ease-out forwards;
+    pointer-events: none;
+    z-index: 100;
+}
+
+@keyframes scorePopup {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(10px);
+    }
+    20% {
+        opacity: 1;
+        transform: scale(1.1) translateY(-5px);
+    }
+    40% {
+        transform: scale(1) translateY(-10px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+    }
+}
+
+/* Achievement Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal.show {
+    opacity: 1;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    border-radius: 16px;
+    max-width: 600px;
+    max-height: 80vh;
+    width: 90%;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 28px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.achievement-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.achievement-card.earned {
+    border-color: var(--celebration);
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.achievement-card.earned::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--celebration-gradient);
+}
+
+.achievement-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.achievement-icon-large {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.achievement-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: var(--text-primary);
+}
+
+.achievement-card p {
+    margin: 0 0 12px 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.achievement-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.achievement-card.locked {
+    opacity: 0.4;
+}
+
+.achievement-card.locked .achievement-icon-large {
+    filter: grayscale(1);
+}
+
+.no-achievements {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+.no-achievements .achievement-icon-large {
+    font-size: 64px;
+    margin-bottom: 16px;
+    opacity: 0.5;
 }

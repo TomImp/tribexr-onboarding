@@ -1,4 +1,3 @@
-console.log('Script.js loading...');
 let currentStep = 0;
 const steps = ['welcome', 'skill', 'genre', 'goals', 'frequency', 'lessons'];
 let userProfile = {
@@ -52,12 +51,10 @@ function nextStep() {
         document.getElementById(`step-${steps[currentStep]}`).classList.add('active');
         
         if (steps[currentStep] === 'lessons') {
-            console.log('Reached lessons step, completing onboarding...');
             userProfile.completedOnboarding = true;
             generatePersonalizedPath();
             populateLessonsTable();
             updateProfileSummary();
-            console.log('About to show main navigation...');
             showMainNavigation();
             saveUserProfile();
         }
@@ -221,22 +218,33 @@ function generatePersonalizedPath() {
         
         pathHTML += `
             <div class="lesson-step ${completionStatus}">
-                <div class="step-number ${isCompleted ? 'completed' : ''}">${index + 1}</div>
                 <div class="lesson-info">
-                    <h4>${lesson.title}</h4>
+                    <div class="lesson-title-row">
+                        <div class="step-number ${isCompleted ? 'completed' : ''}">${index + 1}</div>
+                        <h4>${lesson.title}</h4>
+                    </div>
                     <p>${lesson.description}</p>
+                    <div class="lesson-button-container">
+                        <button class="lesson-start-btn ${buttonClass}" onclick="handleLessonButton(${lesson.lessonIndex}, this)">${buttonText}</button>
+                    </div>
                     <div class="lesson-meta">
                         <span class="meta-badge">${lesson.type}</span>
                         <span class="meta-badge ${difficultyClass}">${lesson.difficulty.charAt(0).toUpperCase() + lesson.difficulty.slice(1)}</span>
                         <span class="meta-badge">${lesson.duration}</span>
                     </div>
-                    <button class="lesson-start-btn ${buttonClass}" onclick="openLesson(${lesson.lessonIndex})">${buttonText}</button>
                 </div>
             </div>
         `;
     });
     
     pathContainer.innerHTML = pathHTML;
+    
+    // Apply horizontal layout for the first 3 lessons if they exist
+    if (lessonFlow.length >= 3) {
+        pathContainer.classList.add('horizontal');
+    } else {
+        pathContainer.classList.remove('horizontal');
+    }
     
     // Save the generated lesson flow
     userProfile.personalizedLessons = lessonFlow;
@@ -256,21 +264,32 @@ function renderPersonalizedPath(lessonFlow) {
         
         pathHTML += `
             <div class="lesson-step ${completionStatus}">
-                <div class="step-number ${isCompleted ? 'completed' : ''}">${index + 1}</div>
                 <div class="lesson-info">
-                    <h4>${lesson.title}</h4>
+                    <div class="lesson-title-row">
+                        <div class="step-number ${isCompleted ? 'completed' : ''}">${index + 1}</div>
+                        <h4>${lesson.title}</h4>
+                    </div>
                     <p>${lesson.description}</p>
+                    <div class="lesson-button-container">
+                        <button class="lesson-start-btn ${buttonClass}" onclick="handleLessonButton(${lesson.lessonIndex || 0}, this)">${buttonText}</button>
+                    </div>
                     <div class="lesson-meta">
                         <span class="meta-badge">${lesson.type}</span>
                         <span class="meta-badge ${difficultyClass}">${lesson.difficulty.charAt(0).toUpperCase() + lesson.difficulty.slice(1)}</span>
                         <span class="meta-badge">${lesson.duration}</span>
                     </div>
-                    <button class="lesson-start-btn ${buttonClass}" onclick="openLesson(${lesson.lessonIndex || 0})">${buttonText}</button>
                 </div>
             </div>
         `;
     });
     pathContainer.innerHTML = pathHTML;
+    
+    // Apply horizontal layout for the first 3 lessons if they exist
+    if (lessonFlow.length >= 3) {
+        pathContainer.classList.add('horizontal');
+    } else {
+        pathContainer.classList.remove('horizontal');
+    }
 }
 
 function getSkillBasedLessons(skill) {
@@ -312,7 +331,7 @@ function populateLessonsTable() {
                 <td>${lesson.equipment}</td>
                 <td>${lesson.genre}</td>
                 <td><div class="rating">${userRating}</div></td>
-                <td><button class="btn-small" onclick="openLesson(${index})">Start</button></td>
+                <td><button class="btn-small ${userProfile.completedLessons.includes(index) ? 'btn-completed' : ''}" onclick="handleLessonTableButton(${index}, this)">${userProfile.completedLessons.includes(index) ? '✓' : 'Start'}</button></td>
             </tr>
         `;
     });
@@ -394,7 +413,7 @@ function filterLessons(filter) {
                 <td>${lesson.equipment}</td>
                 <td>${lesson.genre}</td>
                 <td><div class="rating">${userRating}</div></td>
-                <td><button class="btn-small" onclick="openLesson(${originalIndex})">Start</button></td>
+                <td><button class="btn-small ${userProfile.completedLessons.includes(originalIndex) ? 'btn-completed' : ''}" onclick="handleLessonTableButton(${originalIndex}, this)">${userProfile.completedLessons.includes(originalIndex) ? '✓' : 'Start'}</button></td>
             </tr>
         `;
     });
@@ -413,6 +432,9 @@ function restartOnboarding() {
     
     document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
     
+    // Hide main navigation to avoid double logos
+    hideMainNavigation();
+    
     // Reset genre button state
     const genreNextBtn = document.getElementById('genre-next');
     if (genreNextBtn) {
@@ -429,9 +451,46 @@ function openLesson(lessonIndex) {
     window.location.href = `lesson-viewer.html?lesson=${lessonIndex}`;
 }
 
+// Enhanced button handlers for lesson completion states
+function handleLessonButton(lessonIndex, buttonElement) {
+    const isCompleted = userProfile.completedLessons.includes(lessonIndex);
+    
+    if (isCompleted) {
+        // Show retake options
+        showRetakeDialog(lessonIndex, buttonElement);
+    } else {
+        // Open lesson normally
+        openLesson(lessonIndex);
+    }
+}
+
+function handleLessonTableButton(lessonIndex, buttonElement) {
+    const isCompleted = userProfile.completedLessons.includes(lessonIndex);
+    
+    if (isCompleted) {
+        // Show retake options
+        showRetakeDialog(lessonIndex, buttonElement);
+    } else {
+        // Open lesson normally
+        openLesson(lessonIndex);
+    }
+}
+
+function showRetakeDialog(lessonIndex, buttonElement) {
+    const lessonName = lessons[lessonIndex]?.name || `Lesson ${lessonIndex + 1}`;
+    const confirmed = confirm(`You've completed "${lessonName}".\n\nWould you like to retake this lesson?`);
+    
+    if (confirmed) {
+        openLesson(lessonIndex);
+    }
+}
+
 // Initialize app on page load
 function initializeApp() {
     const hasProfile = loadUserProfile();
+    
+    // Initialize Early Adopter achievement
+    initializeEarlyAdopterAchievement();
     
     // Check URL parameters
     const urlParams = new URLSearchParams(window.location.search);
@@ -507,13 +566,18 @@ function restoreUserSelections() {
 function showProfile() {
     const profileText = `Your DJ Profile:
     
+• DJ Name: ${userProfile.djName || 'DJ Beginner'}
 • Experience Level: ${userProfile.skill ? userProfile.skill.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not set'}
 • Music Genres: ${userProfile.genres && userProfile.genres.length > 0 ? userProfile.genres.map(g => g.replace('-', ' ')).join(', ') : 'Not set'}
 • Goals: ${userProfile.goals ? userProfile.goals.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not set'}
-• Practice Frequency: ${userProfile.frequency ? userProfile.frequency.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not set'}`;
+• Practice Frequency: ${userProfile.frequency ? userProfile.frequency.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Not set'}
+• DJ Score: ${userProfile.djScore || 0} points
+• Progress: ${userProfile.completionPercentage || 0}% complete
+• Achievements: ${userProfile.achievements ? userProfile.achievements.length : 0} earned`;
 
     alert(profileText);
 }
+
 
 function editProfile() {
     const confirmEdit = confirm('This will take you back to the onboarding questions to update your preferences. Continue?');
@@ -552,8 +616,17 @@ function updateProfileSummary() {
 function markLessonCompleted(lessonIndex) {
     if (!userProfile.completedLessons.includes(lessonIndex)) {
         userProfile.completedLessons.push(lessonIndex);
-        userProfile.djScore += 10; // 10 points per lesson
+        const pointsEarned = 10; // 10 points per lesson
+        userProfile.djScore += pointsEarned;
+        const previousPercentage = userProfile.completionPercentage;
         userProfile.completionPercentage = Math.round((userProfile.completedLessons.length / 50) * 100); // 50 total lessons
+        
+        // Trigger celebration animations
+        triggerLessonCompletionCelebration(lessonIndex, pointsEarned);
+        
+        // Check for milestones and achievements
+        checkForAchievements(previousPercentage, userProfile.completionPercentage);
+        
         saveUserProfile();
         updateProfileSummary();
         
@@ -571,19 +644,22 @@ function resetProfile() {
     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
     document.getElementById('step-welcome').classList.add('active');
     document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+    hideMainNavigation();
     alert('Profile reset! You can now start fresh.');
 }
 
 // Main navigation functions
 function showMainNavigation() {
-    console.log('showMainNavigation called');
     const mainNav = document.getElementById('main-nav');
-    console.log('mainNav element:', mainNav);
     if (mainNav) {
         mainNav.style.display = 'flex';
-        console.log('Navigation shown');
-    } else {
-        console.log('main-nav element not found');
+    }
+}
+
+function hideMainNavigation() {
+    const mainNav = document.getElementById('main-nav');
+    if (mainNav) {
+        mainNav.style.display = 'none';
     }
 }
 
@@ -611,9 +687,303 @@ function showSection(sectionName) {
     }
 }
 
-// Initialize when page loads
-console.log('About to add DOMContentLoaded listener...');
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOMContentLoaded fired, calling initializeApp...');
-    initializeApp();
+// Celebration and Achievement Functions
+function triggerLessonCompletionCelebration(lessonIndex, pointsEarned) {
+    // Find the lesson step element and apply celebration animation
+    const lessonSteps = document.querySelectorAll('.lesson-step');
+    const personalizedLessonIndex = userProfile.personalizedLessons?.findIndex(lesson => lesson.lessonIndex === lessonIndex);
+    
+    if (personalizedLessonIndex !== -1 && lessonSteps[personalizedLessonIndex]) {
+        const lessonElement = lessonSteps[personalizedLessonIndex];
+        lessonElement.classList.add('just-completed');
+        
+        // Remove the class after animation
+        setTimeout(() => {
+            lessonElement.classList.remove('just-completed');
+        }, 800);
+    }
+    
+    // Create confetti particles
+    createConfetti();
+    
+    // Show score popup
+    showScorePopup(pointsEarned);
+    
+    // Apply celebration animation to score display
+    const scoreElement = document.querySelector('.dj-score-container strong');
+    if (scoreElement) {
+        scoreElement.classList.add('score-increase');
+        setTimeout(() => {
+            scoreElement.classList.remove('score-increase');
+        }, 600);
+    }
+}
+
+function createConfetti() {
+    const colors = ['#FFD700', '#FF6347', '#32CD32', '#FF69B4', '#00BFFF'];
+    const confettiContainer = document.body;
+    
+    for (let i = 0; i < 15; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti-particle';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.animationDuration = (Math.random() * 1 + 1.5) + 's';
+        
+        confettiContainer.appendChild(confetti);
+        
+        // Remove confetti after animation
+        setTimeout(() => {
+            if (confetti.parentNode) {
+                confetti.parentNode.removeChild(confetti);
+            }
+        }, 2500);
+    }
+}
+
+function showScorePopup(pointsEarned) {
+    const scoreContainer = document.querySelector('.dj-score-container');
+    if (scoreContainer) {
+        const popup = document.createElement('div');
+        popup.className = 'score-popup';
+        popup.textContent = `+${pointsEarned}`;
+        scoreContainer.appendChild(popup);
+        
+        setTimeout(() => {
+            if (popup.parentNode) {
+                popup.parentNode.removeChild(popup);
+            }
+        }, 2000);
+    }
+}
+
+function checkForAchievements(previousPercentage, currentPercentage) {
+    const achievements = [
+        { threshold: 10, title: "First Steps", icon: "🎵", message: "Completed your first lesson!" },
+        { threshold: 25, title: "Getting Warmed Up", icon: "🔥", message: "25% progress - you're on fire!" },
+        { threshold: 50, title: "Halfway Hero", icon: "⭐", message: "50% complete - amazing progress!" },
+        { threshold: 75, title: "DJ Master", icon: "👑", message: "75% complete - you're becoming a pro!" },
+        { threshold: 100, title: "DJ Legend", icon: "🏆", message: "100% complete - you're a legend!" }
+    ];
+    
+    achievements.forEach(achievement => {
+        if (previousPercentage < achievement.threshold && currentPercentage >= achievement.threshold) {
+            showAchievementNotification(achievement);
+            
+            // Save achievement to profile
+            if (!userProfile.achievements) {
+                userProfile.achievements = [];
+            }
+            
+            if (!userProfile.achievements.some(a => a.title === achievement.title)) {
+                userProfile.achievements.push({
+                    ...achievement,
+                    dateEarned: new Date().toISOString()
+                });
+            }
+        }
+    });
+    
+    // Special achievements based on lesson count
+    const lessonCount = userProfile.completedLessons.length;
+    const specialAchievements = [
+        { count: 1, title: "First Lesson", icon: "🎧", message: "Welcome to your DJ journey!" },
+        { count: 5, title: "Quick Learner", icon: "⚡", message: "5 lessons completed!" },
+        { count: 10, title: "Dedicated Student", icon: "📚", message: "10 lessons mastered!" },
+        { count: 20, title: "Skill Builder", icon: "🛠️", message: "20 lessons conquered!" }
+    ];
+    
+    specialAchievements.forEach(achievement => {
+        if (lessonCount === achievement.count) {
+            showAchievementNotification(achievement);
+            
+            if (!userProfile.achievements) {
+                userProfile.achievements = [];
+            }
+            
+            if (!userProfile.achievements.some(a => a.title === achievement.title)) {
+                userProfile.achievements.push({
+                    ...achievement,
+                    dateEarned: new Date().toISOString()
+                });
+            }
+        }
+    });
+}
+
+function showAchievementNotification(achievement) {
+    // Remove any existing notification
+    const existingNotification = document.querySelector('.achievement-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = 'achievement-notification';
+    notification.innerHTML = `
+        <span class="achievement-icon">${achievement.icon}</span>
+        <div>
+            <div style="font-size: 16px; margin-bottom: 4px;">${achievement.title}</div>
+            <div style="font-size: 14px; opacity: 0.9;">${achievement.message}</div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Show notification with animation
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Hide notification after 4 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 500);
+    }, 4000);
+}
+
+// Enhanced updateProfileSummary with achievement display
+function updateProfileSummaryEnhanced() {
+    const summaryElement = document.getElementById('profile-summary');
+    if (summaryElement && userProfile.completedOnboarding) {
+        const skillText = userProfile.skill ? userProfile.skill.replace('-', ' ') : 'any level';
+        const genreText = userProfile.genres && userProfile.genres.length > 0 ? 
+            userProfile.genres.slice(0, 2).map(g => g.replace('-', ' ')).join(' & ') : 'all genres';
+        
+        const achievementCount = userProfile.achievements ? userProfile.achievements.length : 0;
+        const djName = userProfile.djName || 'DJ Beginner';
+        
+        summaryElement.innerHTML = `
+            <div class="profile-stats">
+                <div class="dj-score-container">
+                    <span>Welcome back, ${djName}! Personalized for ${skillText} level, focusing on ${genreText}</span>
+                </div>
+                <div class="stats-row">
+                    <span class="stat dj-score-container"><strong>DJ Score:</strong> ${userProfile.djScore} points</span>
+                    <span class="stat"><strong>Progress:</strong> ${userProfile.completionPercentage}% complete</span>
+                    <span class="stat"><strong>Achievements:</strong> ${achievementCount} earned</span>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Override the original updateProfileSummary
+function updateProfileSummary() {
+    updateProfileSummaryEnhanced();
+}
+
+// Demo function to test celebrations (can be removed in production)
+function triggerDemoCelebration() {
+    triggerLessonCompletionCelebration(0, 10);
+    checkForAchievements(0, 25);
+}
+
+// Achievement Modal Functions
+function showAchievements() {
+    const modal = document.getElementById('achievement-modal');
+    const achievementsList = document.getElementById('achievements-list');
+    
+    const allAchievements = getAllPossibleAchievements();
+    const userAchievements = userProfile.achievements || [];
+    
+    let achievementsHTML = '<div class="achievement-grid">';
+    
+    allAchievements.forEach(achievement => {
+        const isEarned = userAchievements.some(ua => ua.title === achievement.title);
+        const earnedAchievement = userAchievements.find(ua => ua.title === achievement.title);
+        const cardClass = isEarned ? 'achievement-card earned' : 'achievement-card locked';
+        const dateText = isEarned ? `Earned: ${formatDate(earnedAchievement.dateEarned)}` : 'Not yet earned';
+        
+        achievementsHTML += `
+            <div class="${cardClass}">
+                <span class="achievement-icon-large">${achievement.icon}</span>
+                <h3>${achievement.title}</h3>
+                <p>${achievement.message}</p>
+                <div class="achievement-date">${dateText}</div>
+            </div>
+        `;
+    });
+    
+    if (userAchievements.length === 0) {
+        achievementsHTML = `
+            <div class="no-achievements">
+                <span class="achievement-icon-large">🏆</span>
+                <h3>No achievements yet</h3>
+                <p>Complete lessons to earn your first achievement!</p>
+            </div>
+        `;
+    }
+    
+    achievementsHTML += '</div>';
+    achievementsList.innerHTML = achievementsHTML;
+    
+    modal.style.display = 'flex';
+    setTimeout(() => modal.classList.add('show'), 10);
+}
+
+function closeAchievements() {
+    const modal = document.getElementById('achievement-modal');
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
+}
+
+function getAllPossibleAchievements() {
+    return [
+        // Progress-based achievements
+        { threshold: 10, title: "First Steps", icon: "🎵", message: "Completed your first lesson!" },
+        { threshold: 25, title: "Getting Warmed Up", icon: "🔥", message: "25% progress - you're on fire!" },
+        { threshold: 50, title: "Halfway Hero", icon: "⭐", message: "50% complete - amazing progress!" },
+        { threshold: 75, title: "DJ Master", icon: "👑", message: "75% complete - you're becoming a pro!" },
+        { threshold: 100, title: "DJ Legend", icon: "🏆", message: "100% complete - you're a legend!" },
+        
+        // Lesson count achievements
+        { count: 1, title: "First Lesson", icon: "🎧", message: "Welcome to your DJ journey!" },
+        { count: 5, title: "Quick Learner", icon: "⚡", message: "5 lessons completed!" },
+        { count: 10, title: "Dedicated Student", icon: "📚", message: "10 lessons mastered!" },
+        { count: 20, title: "Skill Builder", icon: "🛠️", message: "20 lessons conquered!" },
+        
+        // Special achievements (can be extended)
+        { special: true, title: "Early Adopter", icon: "🌟", message: "Joined the TribeXR DJ Academy!" }
+    ];
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('achievement-modal');
+    if (e.target === modal) {
+        closeAchievements();
+    }
 });
+
+// Initialize user with Early Adopter achievement
+function initializeEarlyAdopterAchievement() {
+    if (!userProfile.achievements) {
+        userProfile.achievements = [];
+    }
+    
+    if (!userProfile.achievements.some(a => a.title === "Early Adopter")) {
+        userProfile.achievements.push({
+            title: "Early Adopter",
+            icon: "🌟",
+            message: "Joined the TribeXR DJ Academy!",
+            dateEarned: new Date().toISOString()
+        });
+        saveUserProfile();
+    }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', initializeApp);

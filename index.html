@@ -11,20 +11,26 @@
         <!-- Main Navigation (visible after onboarding) -->
         <nav class="main-nav" id="main-nav" style="display: none;">
             <div class="nav-logo">
-                <h1>TRIBEXR</h1>
+                <img src="tribe_logo.svg" alt="Tribe Logo" class="nav-logo-img">
                 <p>DJ ACADEMY</p>
             </div>
             <div class="nav-buttons">
                 <button class="nav-tab active" id="learn-tab" onclick="showSection('learn')">LEARN</button>
                 <button class="nav-tab" id="play-tab" onclick="showSection('play')">PLAY</button>
                 <button class="nav-tab" id="perform-tab" onclick="showSection('perform')">PERFORM</button>
+                <div class="profile-icon" onclick="window.open('profile.html', '_blank')" title="View Profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
             </div>
         </nav>
 
         <!-- Welcome Screen -->
         <div class="step active" id="step-welcome">
             <div class="logo">
-                <h1>TRIBEXR</h1>
+                <img src="tribe_logo.svg" alt="Tribe Logo" class="main-logo">
                 <p class="tagline">DJ ACADEMY</p>
             </div>
             <div class="content-card">
@@ -175,10 +181,6 @@
                         <h2>Your Personalized DJ Journey</h2>
                         <p class="subtitle" id="profile-summary">Based on your preferences, here's your custom learning path</p>
                     </div>
-                    <div class="profile-actions">
-                        <button class="btn-secondary" onclick="window.open('profile.html', '_blank')">View Profile</button>
-                        <button class="btn-secondary" onclick="editProfile()">Edit Preferences</button>
-                    </div>
                 </div>
                 
                 <div class="lesson-path" id="lesson-path">
@@ -217,6 +219,8 @@
                 <div class="nav-buttons">
                     <button class="btn-secondary" onclick="restartOnboarding()">Start Over</button>
                     <button class="btn-primary" onclick="startLearning()">Begin Learning</button>
+                    <!-- Demo button for testing celebrations (remove in production) -->
+                    <button class="btn-secondary" onclick="triggerDemoCelebration()" style="margin-top: 10px; font-size: 12px;">Test Celebration (Demo)</button>
                 </div>
             </div>
         </div>
@@ -259,6 +263,19 @@
                         <h3>Virtual Performance Environment</h3>
                         <p>Experience what it's like to perform in front of a crowd. This section will feature virtual venues where you can practice your sets and get comfortable with live performance.</p>
                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Achievement Modal -->
+        <div class="modal" id="achievement-modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🏆 Your Achievements</h2>
+                    <button class="modal-close" onclick="closeAchievements()">&times;</button>
+                </div>
+                <div class="modal-body" id="achievements-list">
+                    <!-- Dynamically populated achievements -->
                 </div>
             </div>
         </div>
