@@ -133,7 +133,7 @@ body {
     color: var(--text-secondary);
     text-transform: uppercase;
     font-weight: 600;
-    margin-top: 8px;
+    margin-top: 4px;
     width: 640px;
     text-align: center;
     white-space: nowrap;
@@ -795,7 +795,7 @@ tr:hover {
 .main-logo {
     width: 640px;
     height: 240px;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     display: block;
     filter: brightness(1);
     object-fit: contain;
