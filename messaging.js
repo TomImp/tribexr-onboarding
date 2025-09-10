@@ -400,18 +400,24 @@ const GOOGLE_CONFIG = {
 
 // Google API initialization
 let gapiInitialized = false;
+let tokenClient = null;
 
 function initializeGoogleAPI() {
     if (gapiInitialized) return Promise.resolve();
     
     return new Promise((resolve, reject) => {
-        gapi.load('client:auth2', () => {
+        gapi.load('client', () => {
             gapi.client.init({
                 apiKey: GOOGLE_CONFIG.apiKey,
-                clientId: GOOGLE_CONFIG.clientId,
                 discoveryDocs: GOOGLE_CONFIG.discoveryDocs,
-                scope: GOOGLE_CONFIG.scope
             }).then(() => {
+                // Initialize Google Identity Services
+                tokenClient = google.accounts.oauth2.initTokenClient({
+                    client_id: GOOGLE_CONFIG.clientId,
+                    scope: GOOGLE_CONFIG.scope,
+                    callback: '', // Will be set dynamically
+                });
+                
                 gapiInitialized = true;
                 resolve();
             }).catch(reject);
@@ -430,8 +436,18 @@ async function importGoogleContacts() {
         
         // Real implementation (requires API keys):
         await initializeGoogleAPI();
-        const authInstance = gapi.auth2.getAuthInstance();
-        const user = await authInstance.signIn();
+        
+        // Request access token with new Google Identity Services
+        await new Promise((resolve, reject) => {
+            tokenClient.callback = (resp) => {
+                if (resp.error !== undefined) {
+                    reject(resp);
+                } else {
+                    resolve(resp);
+                }
+            };
+            tokenClient.requestAccessToken();
+        });
         
         const response = await gapi.client.people.people.connections.list({
             'resourceName': 'people/me',
