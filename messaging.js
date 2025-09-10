@@ -491,35 +491,71 @@ async function importGoogleContacts() {
     }
 }
 
+// Store contacts globally for search/filter
+let allContacts = [];
+
 function displayGoogleContacts(contacts) {
+    // Sort contacts alphabetically by name
+    allContacts = contacts.sort((a, b) => {
+        const nameA = (a.names?.[0]?.displayName || 'Unknown').toLowerCase();
+        const nameB = (b.names?.[0]?.displayName || 'Unknown').toLowerCase();
+        return nameA.localeCompare(nameB);
+    });
+    
     const optionsDiv = document.querySelector('.add-friend-options');
     const resultsDiv = document.getElementById('google-contacts-results');
-    const contactsList = document.getElementById('contacts-list');
     
     optionsDiv.style.display = 'none';
     resultsDiv.style.display = 'block';
     
+    // Update results div with search and bulk selection
+    resultsDiv.innerHTML = `
+        <h3>📋 Contacts Found (${allContacts.length})</h3>
+        <div style="margin-bottom: 15px;">
+            <input type="text" id="contact-search" placeholder="🔍 Search contacts..." 
+                   style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-card); color: var(--text-primary);" 
+                   oninput="filterContacts()">
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <button id="select-all-btn" class="btn-secondary" onclick="toggleSelectAll()" style="flex: 1;">Select All</button>
+                <button id="add-selected-btn" class="btn-primary" onclick="addSelectedContacts()" style="flex: 1;" disabled>Add Selected (0)</button>
+            </div>
+        </div>
+        <div id="contacts-list" style="max-height: 300px; overflow-y: auto; margin: 10px 0;"></div>
+        <button class="btn-secondary" onclick="hideGoogleResults()">Back to Options</button>
+    `;
+    
+    renderContactsList(allContacts);
+}
+
+function renderContactsList(contactsToShow) {
+    const contactsList = document.getElementById('contacts-list');
     contactsList.innerHTML = '';
     
-    if (contacts.length === 0) {
+    if (contactsToShow.length === 0) {
         contactsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No contacts found.</p>';
         return;
     }
     
-    contacts.forEach((contact, index) => {
+    contactsToShow.forEach((contact, index) => {
         const name = contact.names?.[0]?.displayName || 'Unknown';
         const email = contact.emailAddresses?.[0]?.value || '';
         const phone = contact.phoneNumbers?.[0]?.value || '';
+        const contactId = `contact_${index}_${Date.now()}`;
         
         const contactElement = document.createElement('div');
         contactElement.className = 'contact-item';
+        contactElement.style.cssText = 'display: flex; align-items: center; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 8px; background: var(--bg-card);';
         contactElement.innerHTML = `
-            <div class="contact-info">
-                <div class="contact-name">${name}</div>
-                <div class="contact-detail">${email || phone || 'No contact info'}</div>
+            <input type="checkbox" id="${contactId}" class="contact-checkbox" 
+                   onchange="updateSelectedCount()" 
+                   style="margin-right: 12px; transform: scale(1.2);">
+            <div class="contact-info" style="flex: 1;">
+                <div class="contact-name" style="font-weight: 500; color: var(--text-primary);">${name}</div>
+                <div class="contact-detail" style="font-size: 0.9em; color: var(--text-secondary);">${email || phone || 'No contact info'}</div>
             </div>
-            <button class="add-contact-btn" onclick="addContactAsFriend('${name}', '${email}', '${phone}')">
-                Add Friend
+            <button class="add-contact-btn" onclick="addContactAsFriend('${name}', '${email}', '${phone}')" 
+                    style="margin-left: 10px; padding: 6px 12px; background: var(--accent-gradient); border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.9em;">
+                Add
             </button>
         `;
         
@@ -527,15 +563,77 @@ function displayGoogleContacts(contacts) {
     });
 }
 
+function filterContacts() {
+    const searchTerm = document.getElementById('contact-search').value.toLowerCase();
+    const filteredContacts = allContacts.filter(contact => {
+        const name = (contact.names?.[0]?.displayName || '').toLowerCase();
+        const email = (contact.emailAddresses?.[0]?.value || '').toLowerCase();
+        return name.includes(searchTerm) || email.includes(searchTerm);
+    });
+    renderContactsList(filteredContacts);
+}
+
+function toggleSelectAll() {
+    const checkboxes = document.querySelectorAll('.contact-checkbox');
+    const selectAllBtn = document.getElementById('select-all-btn');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+    selectAllBtn.textContent = allChecked ? 'Select All' : 'Deselect All';
+    updateSelectedCount();
+}
+
+function updateSelectedCount() {
+    const selectedCount = document.querySelectorAll('.contact-checkbox:checked').length;
+    const addSelectedBtn = document.getElementById('add-selected-btn');
+    
+    addSelectedBtn.textContent = `Add Selected (${selectedCount})`;
+    addSelectedBtn.disabled = selectedCount === 0;
+    
+    const selectAllBtn = document.getElementById('select-all-btn');
+    const totalCheckboxes = document.querySelectorAll('.contact-checkbox').length;
+    const allChecked = selectedCount === totalCheckboxes && totalCheckboxes > 0;
+    selectAllBtn.textContent = allChecked ? 'Deselect All' : 'Select All';
+}
+
+function addSelectedContacts() {
+    const selectedCheckboxes = document.querySelectorAll('.contact-checkbox:checked');
+    let addedCount = 0;
+    
+    selectedCheckboxes.forEach(checkbox => {
+        const contactItem = checkbox.closest('.contact-item');
+        const name = contactItem.querySelector('.contact-name').textContent;
+        const email = contactItem.querySelector('.contact-detail').textContent;
+        const phone = ''; // We don't display phone separately anymore
+        
+        // Don't add if email is "No contact info"
+        const actualEmail = email === 'No contact info' ? '' : email;
+        
+        addContactAsFriend(name, actualEmail, phone, true); // true = silent mode
+        addedCount++;
+    });
+    
+    alert(`Added ${addedCount} contacts as friends!`);
+    hideGoogleResults();
+    closeAddFriendModal();
+}
+
 function hideGoogleResults() {
     document.querySelector('.add-friend-options').style.display = 'block';
     document.getElementById('google-contacts-results').style.display = 'none';
 }
 
-function addContactAsFriend(name, email, phone) {
+function addContactAsFriend(name, email, phone, silent = false) {
+    // Check if friend already exists
+    const existingFriend = friends.find(f => f.name === name || (email && f.email === email));
+    if (existingFriend) {
+        if (!silent) alert(`${name} is already in your friends list!`);
+        return false;
+    }
+    
     // Create a new friend from contact
     const newFriend = {
-        id: 'contact_' + Date.now(),
+        id: 'contact_' + Date.now() + '_' + Math.random(),
         name: name,
         avatar: '👤',
         status: 'From contacts',
@@ -549,12 +647,16 @@ function addContactAsFriend(name, email, phone) {
     friends.push(newFriend);
     renderFriendsList();
     
-    // Show success message
-    alert(`Added ${name} as a friend!`);
+    if (!silent) {
+        // Show success message
+        alert(`Added ${name} as a friend!`);
+        
+        // Close modals
+        hideGoogleResults();
+        closeAddFriendModal();
+    }
     
-    // Close modals
-    hideGoogleResults();
-    closeAddFriendModal();
+    return true;
 }
 
 // QR Code Functions
