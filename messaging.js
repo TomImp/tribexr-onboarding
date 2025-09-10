@@ -392,8 +392,8 @@ document.addEventListener('DOMContentLoaded', initializeMessaging);
 
 // Google API Configuration
 const GOOGLE_CONFIG = {
-    apiKey: 'YOUR_GOOGLE_API_KEY', // You'll need to get this from Google Cloud Console
-    clientId: 'YOUR_GOOGLE_CLIENT_ID', // You'll need to get this from Google Cloud Console
+    apiKey: 'AIzaSyCteEx5KeHLRNXfF8T2Ea4fVhuCE6OxArs', // You'll need to get this from Google Cloud Console
+    clientId: '908438948027-g2ugn0jkt2imv5s2qq3028te6slmsob7.apps.googleusercontent.com', // You'll need to get this from Google Cloud Console
     discoveryDocs: ['https://people.googleapis.com/$discovery/rest?version=v1'],
     scope: 'https://www.googleapis.com/auth/contacts.readonly'
 };
@@ -429,7 +429,6 @@ async function importGoogleContacts() {
         // In production, you'd uncomment the real implementation below
         
         // Real implementation (requires API keys):
-        /*
         await initializeGoogleAPI();
         const authInstance = gapi.auth2.getAuthInstance();
         const user = await authInstance.signIn();
@@ -440,9 +439,11 @@ async function importGoogleContacts() {
         });
         
         const contacts = response.result.connections || [];
-        */
+	displayGoogleContacts(contacts);
+  	button.textContent = 'Import Contacts';
         
-        // Demo implementation with mock data:
+        /*
+	// Demo implementation with mock data:
         setTimeout(() => {
             const mockContacts = [
                 {
@@ -465,6 +466,7 @@ async function importGoogleContacts() {
             displayGoogleContacts(mockContacts);
             button.textContent = 'Import Contacts';
         }, 1500);
+	/*
         
     } catch (error) {
         console.error('Error importing contacts:', error);

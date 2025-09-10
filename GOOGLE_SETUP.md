@@ -2,6 +2,9 @@
 
 To enable Google Contacts import functionality, you'll need to set up Google Cloud credentials.
 
+## ⚠️ SECURITY WARNING
+**NEVER share your API keys or Client IDs publicly!** These are private credentials that should be kept secure.
+
 ## Step 1: Create Google Cloud Project
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
