@@ -466,7 +466,7 @@ async function importGoogleContacts() {
             displayGoogleContacts(mockContacts);
             button.textContent = 'Import Contacts';
         }, 1500);
-	/*
+	*/
         
     } catch (error) {
         console.error('Error importing contacts:', error);
