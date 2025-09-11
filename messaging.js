@@ -843,51 +843,74 @@ function showQRCode() {
     
     const qrData = JSON.stringify(userInfo);
     
-    // Wait for QRCode library to load
-    function generateQR() {
-        if (typeof QRCode === 'undefined') {
-            setTimeout(generateQR, 100);
-            return;
-        }
-        
-        try {
-            QRCode.toCanvas(document.getElementById('qr-code-canvas'), qrData, {
+    // Generate QR code
+    const canvas = document.getElementById('qr-code-canvas');
+    
+    // Wait a moment for library to load, then generate
+    setTimeout(() => {
+        if (typeof QRCode !== 'undefined') {
+            // Library loaded successfully - generate real QR code
+            QRCode.toCanvas(canvas, qrData, {
                 width: 200,
                 height: 200,
+                margin: 2,
                 color: {
                     dark: '#000000',
                     light: '#FFFFFF'
                 }
             }, function (error) {
                 if (error) {
-                    console.error('QR Code generation error:', error);
+                    console.error('QR generation failed:', error);
                     createFallbackQR();
+                } else {
+                    console.log('QR code generated successfully!');
                 }
             });
-        } catch (error) {
-            console.error('QR Code library error:', error);
+        } else {
+            // Library not loaded - show fallback
+            console.log('QRCode library not available, showing fallback');
             createFallbackQR();
         }
-    }
+    }, 500);
     
     function createFallbackQR() {
-        const canvas = document.getElementById('qr-code-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = 200;
         canvas.height = 200;
+        
+        // White background
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, 200, 200);
+        
+        // Black border
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(10, 10, 180, 180);
+        
+        // Text content
         ctx.fillStyle = '#000000';
-        ctx.font = '12px Arial';
+        ctx.font = 'bold 16px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('QR Code', 100, 90);
-        ctx.fillText(`${currentUser.name}`, 100, 110);
-        ctx.fillText('DJ Profile', 100, 130);
-        ctx.strokeRect(20, 20, 160, 160);
+        ctx.fillText('QR CODE', 100, 50);
+        
+        ctx.font = '14px Arial';
+        ctx.fillText(currentUser.name, 100, 90);
+        ctx.fillText('DJ Profile', 100, 110);
+        
+        ctx.font = '10px Arial';
+        ctx.fillText('TribeXR DJ Academy', 100, 140);
+        ctx.fillText('ID: ' + currentUser.id, 100, 155);
+        
+        // Simple QR-like pattern
+        ctx.fillStyle = '#000000';
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                if ((i + j) % 2 === 0) {
+                    ctx.fillRect(20 + i * 5, 160 + j * 5, 4, 4);
+                }
+            }
+        }
     }
-    
-    // Start QR generation
-    generateQR();
     
     // Show modal
     modal.style.display = 'flex';
