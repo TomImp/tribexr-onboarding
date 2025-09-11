@@ -843,25 +843,57 @@ function showQRCode() {
     
     const qrData = JSON.stringify(userInfo);
     
-    QRCode.toCanvas(document.getElementById('qr-code-canvas'), qrData, {
-        width: 200,
-        height: 200,
-        color: {
-            dark: '#000000',
-            light: '#FFFFFF'
-        }
-    }, function (error) {
-        if (error) {
-            console.error('QR Code generation error:', error);
-            alert('Error generating QR code');
+    // Wait for QRCode library to load
+    function generateQR() {
+        if (typeof QRCode === 'undefined') {
+            setTimeout(generateQR, 100);
             return;
         }
         
-        modal.style.display = 'flex';
-        setTimeout(() => {
-            modal.classList.add('show');
-        }, 10);
-    });
+        try {
+            QRCode.toCanvas(document.getElementById('qr-code-canvas'), qrData, {
+                width: 200,
+                height: 200,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                }
+            }, function (error) {
+                if (error) {
+                    console.error('QR Code generation error:', error);
+                    createFallbackQR();
+                }
+            });
+        } catch (error) {
+            console.error('QR Code library error:', error);
+            createFallbackQR();
+        }
+    }
+    
+    function createFallbackQR() {
+        const canvas = document.getElementById('qr-code-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 200;
+        canvas.height = 200;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, 200, 200);
+        ctx.fillStyle = '#000000';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('QR Code', 100, 90);
+        ctx.fillText(`${currentUser.name}`, 100, 110);
+        ctx.fillText('DJ Profile', 100, 130);
+        ctx.strokeRect(20, 20, 160, 160);
+    }
+    
+    // Start QR generation
+    generateQR();
+    
+    // Show modal
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
     
     closeAddFriendModal();
 }
