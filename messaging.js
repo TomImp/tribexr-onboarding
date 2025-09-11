@@ -848,29 +848,79 @@ function showQRCode() {
     
     // Function to attempt QR generation
     function attemptQRGeneration(retries = 0) {
-        if (window.QRCodeLibraryLoaded && typeof QRCode !== 'undefined') {
-            // Library loaded successfully - generate real QR code
-            try {
-                QRCode.toCanvas(canvas, qrData, {
-                    width: 200,
-                    height: 200,
-                    margin: 2,
-                    color: {
-                        dark: '#000000',
-                        light: '#FFFFFF'
-                    }
-                }, function (error) {
-                    if (error) {
-                        console.error('QR generation failed:', error);
-                        createSimpleQR();
-                    } else {
-                        console.log('QR code generated successfully!');
-                    }
-                });
-            } catch (error) {
-                console.error('QR code error:', error);
-                createSimpleQR();
+        if (window.QRCodeLibraryLoaded) {
+            // Check which QR library is available
+            if (typeof QRCode !== 'undefined' && QRCode.toCanvas) {
+                // Using qrcode library (npm qrcode package)
+                try {
+                    QRCode.toCanvas(canvas, qrData, {
+                        width: 200,
+                        height: 200,
+                        margin: 2,
+                        color: {
+                            dark: '#000000',
+                            light: '#FFFFFF'
+                        }
+                    }, function (error) {
+                        if (error) {
+                            console.error('QR generation failed:', error);
+                            createSimpleQR();
+                        } else {
+                            console.log('QR code generated successfully with qrcode library!');
+                        }
+                    });
+                    return;
+                } catch (error) {
+                    console.error('qrcode library error:', error);
+                }
             }
+            
+            if (typeof qrcode !== 'undefined') {
+                // Using qrcode-generator library (different API)
+                try {
+                    const qr = qrcode(0, 'M');
+                    qr.addData(qrData);
+                    qr.make();
+                    
+                    // Draw QR code on canvas
+                    const modules = qr.modules;
+                    const size = modules.length;
+                    const cellSize = 160 / size;
+                    const offset = 20;
+                    
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    
+                    // White background
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, 200, 200);
+                    
+                    // Draw QR modules
+                    ctx.fillStyle = '#000000';
+                    for (let row = 0; row < size; row++) {
+                        for (let col = 0; col < size; col++) {
+                            if (modules[row][col]) {
+                                ctx.fillRect(
+                                    offset + col * cellSize,
+                                    offset + row * cellSize,
+                                    cellSize,
+                                    cellSize
+                                );
+                            }
+                        }
+                    }
+                    
+                    console.log('QR code generated successfully with qrcode-generator library!');
+                    return;
+                } catch (error) {
+                    console.error('qrcode-generator library error:', error);
+                }
+            }
+            
+            // If we get here, library loaded but APIs don't work
+            console.log('QR library loaded but APIs not compatible, generating simple QR pattern');
+            createSimpleQR();
         } else if (retries < 10) {
             // Library not ready yet, wait and try again
             setTimeout(() => attemptQRGeneration(retries + 1), 500);
