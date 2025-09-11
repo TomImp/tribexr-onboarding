@@ -226,10 +226,13 @@ function renderMessages(friendId) {
     friendMessages.forEach(message => {
         const messageElement = document.createElement('div');
         messageElement.className = `message ${message.type}`;
+        messageElement.setAttribute('data-message-id', message.id);
         
         messageElement.innerHTML = `
-            <div>${message.text}</div>
-            <div class="message-time">${formatMessageTime(message.timestamp)}</div>
+            <div class="message-content">
+                <div>${message.text}</div>
+                <div class="message-time">${formatMessageTime(message.timestamp)}</div>
+            </div>
         `;
         
         messagesContainer.appendChild(messageElement);
@@ -264,39 +267,44 @@ function sendMessage() {
     
     // Clear input
     messageInput.value = '';
+    document.getElementById('send-button').disabled = true;
     
     // Re-render messages
     renderMessages(selectedFriendId);
     
-    // In production, you'd send this to Stream.io or your backend
-    // sendMessageToBackend(selectedFriendId, newMessage);
+    // Update friend's last message in sidebar
+    updateFriendLastMessage(selectedFriendId, messageText, 'just now');
     
-    // Mock receiving a response (for demo purposes)
+    // Show typing indicator and simulate realistic response
+    showTypingIndicator(selectedFriendId);
+    
+    // Simulate friend reading the message (mark as read)
     setTimeout(() => {
-        simulateReceivedMessage(selectedFriendId);
-    }, 1000 + Math.random() * 2000);
+        markMessageAsRead(newMessage.id);
+    }, 500 + Math.random() * 1500);
+    
+    // Mock receiving a response with realistic timing
+    const responseDelay = getRealisticResponseDelay(messageText);
+    setTimeout(() => {
+        hideTypingIndicator(selectedFriendId);
+        simulateReceivedMessage(selectedFriendId, messageText);
+    }, responseDelay);
 }
 
-function simulateReceivedMessage(friendId) {
-    const responses = [
-        "That's awesome! 🎧",
-        "Nice mixing! Keep it up",
-        "Want to practice together?",
-        "I love that track!",
-        "Great beat matching 🔥",
-        "Thanks for the tip!",
-        "Let's jam sometime",
-        "What controller are you using?"
-    ];
+function simulateReceivedMessage(friendId, userMessage = '') {
+    const friend = friends.find(f => f.id === friendId);
+    const friendName = friend ? friend.name : 'Friend';
     
-    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+    // Generate contextual responses based on user's message
+    const response = generateContextualResponse(userMessage, friendName);
     
     const receivedMessage = {
         id: Date.now().toString(),
         senderId: friendId,
-        text: randomResponse,
+        text: response,
         timestamp: new Date(),
-        type: 'received'
+        type: 'received',
+        read: false
     };
     
     if (!messages[friendId]) {
@@ -304,9 +312,17 @@ function simulateReceivedMessage(friendId) {
     }
     messages[friendId].push(receivedMessage);
     
+    // Update friend's last message in sidebar
+    updateFriendLastMessage(friendId, response, 'just now');
+    
     // Only re-render if this friend is currently selected
     if (selectedFriendId === friendId) {
         renderMessages(friendId);
+    }
+    
+    // Show desktop notification if chat is not active
+    if (selectedFriendId !== friendId) {
+        showDesktopNotification(friendName, response);
     }
 }
 
@@ -336,6 +352,152 @@ function formatMessageTime(timestamp) {
     if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h ago`;
     
     return messageTime.toLocaleDateString();
+}
+
+// Realistic messaging helper functions
+function getRealisticResponseDelay(message) {
+    const baseDelay = 1000; // 1 second base
+    const readingSpeed = message.length * 50; // 50ms per character to "read"
+    const typingSpeed = Math.random() * 3000 + 1000; // 1-4 seconds to "type" response
+    return baseDelay + readingSpeed + typingSpeed;
+}
+
+function generateContextualResponse(userMessage, friendName) {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    // DJ-specific responses based on keywords
+    if (lowerMessage.includes('beat') || lowerMessage.includes('mix')) {
+        const beatResponses = [
+            "Your beat matching is getting so much better! 🎧",
+            "I love that transition! How did you nail it?",
+            "That mix was fire! 🔥 What tracks were you using?",
+            "Beat matching takes practice but you're doing great!",
+            "Want to practice mixing together sometime?"
+        ];
+        return beatResponses[Math.floor(Math.random() * beatResponses.length)];
+    }
+    
+    if (lowerMessage.includes('lesson') || lowerMessage.includes('learn')) {
+        const lessonResponses = [
+            "Which lesson are you working on? I just finished the EQ one!",
+            "That lesson was really helpful! Did you try the exercise?",
+            "I'm stuck on the same lesson! Want to figure it out together?",
+            "The lessons on TribeXR are so good! 📚",
+            "Have you tried the advanced techniques yet?"
+        ];
+        return lessonResponses[Math.floor(Math.random() * lessonResponses.length)];
+    }
+    
+    if (lowerMessage.includes('hi') || lowerMessage.includes('hey') || lowerMessage.includes('hello')) {
+        const greetingResponses = [
+            `Hey! Great to hear from you! How's your DJ practice going?`,
+            `Hi there! 👋 Been working on any new tracks lately?`,
+            `Hello! Perfect timing - I was just about to message you!`,
+            `Hey! How's the mixing coming along?`
+        ];
+        return greetingResponses[Math.floor(Math.random() * greetingResponses.length)];
+    }
+    
+    if (lowerMessage.includes('practice') || lowerMessage.includes('jam')) {
+        const practiceResponses = [
+            "Yes! Let's set up a practice session! 🎵",
+            "I'm free this weekend if you want to jam!",
+            "Practice makes perfect! Count me in!",
+            "Would love to practice together! When works for you?",
+            "Let's do it! I've been working on some new transitions!"
+        ];
+        return practiceResponses[Math.floor(Math.random() * practiceResponses.length)];
+    }
+    
+    if (lowerMessage.includes('?')) {
+        const questionResponses = [
+            "Good question! Let me think about that... 🤔",
+            "Hmm, I'm not sure but I think...",
+            "That's interesting! Have you tried asking in the TribeXR community?",
+            "I was wondering the same thing! Maybe we can figure it out together?",
+            "Great question! I'll ask my instructor and get back to you!"
+        ];
+        return questionResponses[Math.floor(Math.random() * questionResponses.length)];
+    }
+    
+    // General enthusiastic responses
+    const generalResponses = [
+        "That's awesome! 🎧",
+        "Nice work! Keep it up!",
+        "Totally agree! 💯",
+        "That sounds amazing!",
+        "I know exactly what you mean!",
+        "You're getting so good at this!",
+        "That's so cool! 🔥",
+        "Thanks for sharing that!",
+        "I love your enthusiasm!",
+        "You inspire me to practice more!"
+    ];
+    
+    return generalResponses[Math.floor(Math.random() * generalResponses.length)];
+}
+
+function showTypingIndicator(friendId) {
+    if (selectedFriendId !== friendId) return;
+    
+    const messagesContainer = document.getElementById('messages-container');
+    if (!messagesContainer) return;
+    
+    const typingIndicator = document.createElement('div');
+    typingIndicator.id = 'typing-indicator';
+    typingIndicator.className = 'message received';
+    typingIndicator.innerHTML = `
+        <div class="message-content">
+            <div class="typing-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="message-time">typing...</div>
+        </div>
+    `;
+    
+    messagesContainer.appendChild(typingIndicator);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function hideTypingIndicator(friendId) {
+    const typingIndicator = document.getElementById('typing-indicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+function markMessageAsRead(messageId) {
+    // In a real app, this would update the message status
+    // For now, we'll just add a visual indicator
+    const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+    if (messageElement) {
+        const timeElement = messageElement.querySelector('.message-time');
+        if (timeElement && !timeElement.textContent.includes('✓')) {
+            timeElement.textContent += ' ✓';
+        }
+    }
+}
+
+function updateFriendLastMessage(friendId, message, time) {
+    const friend = friends.find(f => f.id === friendId);
+    if (friend) {
+        friend.lastMessage = message.length > 30 ? message.substring(0, 30) + '...' : message;
+        friend.lastMessageTime = time;
+        renderFriendsList();
+    }
+}
+
+function showDesktopNotification(friendName, message) {
+    // In a real app, you'd request notification permission and show notifications
+    console.log(`New message from ${friendName}: ${message}`);
+    
+    // Update favicon or title to show unread messages
+    document.title = `(1) TribeXR - Messages`;
+    
+    // Reset title when user focuses the window
+    window.addEventListener('focus', () => {
+        document.title = 'TribeXR - Messages';
+    }, { once: true });
 }
 
 // Add Friend Modal Functions
