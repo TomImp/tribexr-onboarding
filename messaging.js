@@ -858,7 +858,9 @@ function showQRCode() {
         }
         
         modal.style.display = 'flex';
-        setTimeout(() => modal.classList.add('show'), 10);
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
     });
     
     closeAddFriendModal();
@@ -952,6 +954,54 @@ function processScanResult(friendData) {
     closeQRModal();
 }
 
+function handleQRUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Show loading message
+    const instructions = document.getElementById('qr-instructions');
+    const originalText = instructions.textContent;
+    instructions.textContent = 'Processing QR code...';
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            try {
+                // For demo purposes, simulate QR code reading
+                // In production, you'd use a QR library like jsQR
+                
+                setTimeout(() => {
+                    // Simulate successful QR code reading
+                    const mockFriendData = {
+                        id: 'qr_friend_' + Date.now(),
+                        name: 'DJ Scanner',
+                        avatar: '🎯',
+                        status: 'Added via QR Code',
+                        online: true,
+                        lastMessage: '',
+                        lastMessageTime: '',
+                        email: 'qr.friend@djclub.com',
+                        phone: ''
+                    };
+                    
+                    processScanResult(mockFriendData);
+                    instructions.textContent = originalText;
+                }, 1500);
+                
+            } catch (error) {
+                instructions.textContent = 'Could not read QR code. Please try another image.';
+                setTimeout(() => {
+                    instructions.textContent = originalText;
+                }, 3000);
+            }
+        };
+        img.src = e.target.result;
+    };
+    
+    reader.readAsDataURL(file);
+}
+
 function closeQRModal() {
     const modal = document.getElementById('qr-code-modal');
     modal.classList.remove('show');
@@ -979,5 +1029,7 @@ window.TribeMessaging = {
     renderFriendsList,
     importGoogleContacts,
     showQRCode,
-    scanQRCode
+    scanQRCode,
+    handleQRUpload,
+    closeQRModal
 };
