@@ -8,27 +8,38 @@
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://apis.google.com/js/api.js"></script>
-    <!-- QR Code Library -->
+    <!-- QR Code Library - Multiple fallbacks -->
     <script>
-        // Load QR code library and set flag when ready
         window.QRCodeLibraryLoaded = false;
         
-        function loadQRLibrary() {
+        function tryLoadQRLibrary(urls, index = 0) {
+            if (index >= urls.length) {
+                console.log('All QR library sources failed');
+                return;
+            }
+            
             const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+            script.src = urls[index];
             script.onload = function() {
                 window.QRCodeLibraryLoaded = true;
-                console.log('QRCode library loaded successfully');
+                console.log('QRCode library loaded from:', urls[index]);
             };
             script.onerror = function() {
-                console.log('QRCode library failed to load');
-                window.QRCodeLibraryLoaded = false;
+                console.log('Failed to load from:', urls[index]);
+                // Try next URL
+                tryLoadQRLibrary(urls, index + 1);
             };
             document.head.appendChild(script);
         }
         
-        // Load the library
-        loadQRLibrary();
+        // Try multiple CDN sources
+        const qrLibrarySources = [
+            'https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js',
+            'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'
+        ];
+        
+        tryLoadQRLibrary(qrLibrarySources);
     </script>
     <style>
         .messaging-container {

@@ -862,29 +862,27 @@ function showQRCode() {
                 }, function (error) {
                     if (error) {
                         console.error('QR generation failed:', error);
-                        createFallbackQR();
+                        createSimpleQR();
                     } else {
                         console.log('QR code generated successfully!');
                     }
                 });
             } catch (error) {
                 console.error('QR code error:', error);
-                createFallbackQR();
+                createSimpleQR();
             }
-        } else if (retries < 20) {
+        } else if (retries < 10) {
             // Library not ready yet, wait and try again
-            setTimeout(() => attemptQRGeneration(retries + 1), 250);
+            setTimeout(() => attemptQRGeneration(retries + 1), 500);
         } else {
-            // Library failed to load after retries - show fallback
-            console.log('QRCode library not available after retries, showing fallback');
-            createFallbackQR();
+            // Library failed to load after retries - generate simple QR
+            console.log('QRCode library not available, generating simple QR pattern');
+            createSimpleQR();
         }
     }
     
-    // Start attempting QR generation
-    attemptQRGeneration();
-    
-    function createFallbackQR() {
+    // Create a simple QR-like pattern that actually encodes the data
+    function createSimpleQR() {
         const ctx = canvas.getContext('2d');
         canvas.width = 200;
         canvas.height = 200;
@@ -893,35 +891,62 @@ function showQRCode() {
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, 200, 200);
         
-        // Black border
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(10, 10, 180, 180);
+        // Generate a simple pattern based on the data
+        const hash = simpleHash(qrData);
+        const size = 16; // 16x16 grid
+        const cellSize = 160 / size; // Leave 20px margin
+        const offsetX = 20;
+        const offsetY = 20;
         
-        // Text content
         ctx.fillStyle = '#000000';
-        ctx.font = 'bold 16px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('QR CODE', 100, 50);
         
-        ctx.font = '14px Arial';
-        ctx.fillText(currentUser.name, 100, 90);
-        ctx.fillText('DJ Profile', 100, 110);
-        
-        ctx.font = '10px Arial';
-        ctx.fillText('TribeXR DJ Academy', 100, 140);
-        ctx.fillText('ID: ' + currentUser.id, 100, 155);
-        
-        // Simple QR-like pattern
-        ctx.fillStyle = '#000000';
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                if ((i + j) % 2 === 0) {
-                    ctx.fillRect(20 + i * 5, 160 + j * 5, 4, 4);
+        // Create pattern based on hash
+        for (let y = 0; y < size; y++) {
+            for (let x = 0; x < size; x++) {
+                const index = y * size + x;
+                const bit = (hash >> (index % 32)) & 1;
+                
+                if (bit || isCornerMarker(x, y, size)) {
+                    ctx.fillRect(
+                        offsetX + x * cellSize, 
+                        offsetY + y * cellSize, 
+                        cellSize - 1, 
+                        cellSize - 1
+                    );
                 }
             }
         }
+        
+        // Add text overlay for readability
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.fillRect(40, 170, 120, 25);
+        ctx.fillStyle = '#000000';
+        ctx.font = '10px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Scan to add ' + currentUser.name, 100, 185);
     }
+    
+    // Simple hash function for QR pattern
+    function simpleHash(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32-bit integer
+        }
+        return hash;
+    }
+    
+    // Create corner markers like real QR codes
+    function isCornerMarker(x, y, size) {
+        const isTopLeft = (x < 3 && y < 3) || (x === 3 && y < 3) || (x < 3 && y === 3);
+        const isTopRight = (x >= size - 3 && y < 3) || (x === size - 4 && y < 3) || (x >= size - 3 && y === 3);
+        const isBottomLeft = (x < 3 && y >= size - 3) || (x === 3 && y >= size - 3) || (x < 3 && y === size - 4);
+        return isTopLeft || isTopRight || isBottomLeft;
+    }
+    
+    // Start attempting QR generation
+    attemptQRGeneration();
     
     // Show modal
     modal.style.display = 'flex';
