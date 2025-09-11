@@ -550,7 +550,38 @@ document.addEventListener('click', function(e) {
 });
 
 // Initialize when page loads
-document.addEventListener('DOMContentLoaded', initializeMessaging);
+document.addEventListener('DOMContentLoaded', function() {
+    initializeMessaging();
+    
+    // Check if someone came via QR code
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('action') === 'add_friend') {
+        const friendData = {
+            id: urlParams.get('id'),
+            name: urlParams.get('name'),
+            avatar: urlParams.get('avatar') || '🎧',
+            status: 'Added via QR Code',
+            online: true,
+            lastMessage: '',
+            lastMessageTime: '',
+            email: '',
+            phone: ''
+        };
+        
+        if (friendData.id && friendData.name) {
+            // Add the friend
+            const success = addContactAsFriend(friendData.name, '', '', true);
+            if (success) {
+                // Show success message
+                setTimeout(() => {
+                    alert(`🎉 Successfully added ${friendData.name} as a friend via QR code!`);
+                    // Clean up URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }, 500);
+            }
+        }
+    }
+});
 
 // Google API Configuration
 const GOOGLE_CONFIG = {
@@ -832,16 +863,17 @@ function showQRCode() {
     instructions.textContent = 'Share this QR code with other DJs to connect instantly!';
     scannerContainer.style.display = 'none';
     
-    // Generate QR code with user info
-    const userInfo = {
-        type: 'tribexr_dj',
+    // Generate QR code with shareable URL
+    const baseUrl = 'https://tribexr-onboarding.vercel.app/messaging.html';
+    const userParams = new URLSearchParams({
+        action: 'add_friend',
         id: currentUser.id,
         name: currentUser.name,
         avatar: currentUser.avatar,
-        timestamp: Date.now()
-    };
+        source: 'qr_code'
+    });
     
-    const qrData = JSON.stringify(userInfo);
+    const qrData = `${baseUrl}?${userParams.toString()}`;
     
     // Generate QR code
     const canvas = document.getElementById('qr-code-canvas');
