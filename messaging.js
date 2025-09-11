@@ -928,11 +928,40 @@ function showQRCode() {
                     } else {
                         console.log('Could not access modules, trying createImgTag method...');
                         // Try alternative method - create as HTML and extract data
-                        const imgTag = qr.createImgTag(2, 8);
+                        const imgTag = qr.createImgTag(4, 0); // cellSize=4, margin=0 for larger image
                         console.log('Image tag method result:', imgTag);
                         
-                        // If that doesn't work, fallback to simple pattern
-                        throw new Error('Modules not accessible');
+                        // Extract the base64 data URL from the img tag
+                        const srcMatch = imgTag.match(/src="([^"]+)"/);
+                        if (srcMatch && srcMatch[1]) {
+                            const dataUrl = srcMatch[1];
+                            
+                            // Create an image and draw it to canvas
+                            const img = new Image();
+                            img.onload = function() {
+                                const ctx = canvas.getContext('2d');
+                                canvas.width = 200;
+                                canvas.height = 200;
+                                
+                                // White background
+                                ctx.fillStyle = '#FFFFFF';
+                                ctx.fillRect(0, 0, 200, 200);
+                                
+                                // Center the QR code
+                                const qrSize = Math.min(160, img.width, img.height);
+                                const x = (200 - qrSize) / 2;
+                                const y = (200 - qrSize) / 2;
+                                
+                                // Draw the QR code
+                                ctx.drawImage(img, x, y, qrSize, qrSize);
+                                
+                                console.log('QR code generated successfully with qrcode-generator library!');
+                            };
+                            img.src = dataUrl;
+                            return;
+                        } else {
+                            throw new Error('Could not extract image data');
+                        }
                     }
                 } catch (error) {
                     console.error('qrcode-generator library error:', error);
