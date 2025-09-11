@@ -846,32 +846,43 @@ function showQRCode() {
     // Generate QR code
     const canvas = document.getElementById('qr-code-canvas');
     
-    // Wait a moment for library to load, then generate
-    setTimeout(() => {
-        if (typeof QRCode !== 'undefined' || window.QRCodeReady) {
+    // Function to attempt QR generation
+    function attemptQRGeneration(retries = 0) {
+        if (window.QRCodeLibraryLoaded && typeof QRCode !== 'undefined') {
             // Library loaded successfully - generate real QR code
-            QRCode.toCanvas(canvas, qrData, {
-                width: 200,
-                height: 200,
-                margin: 2,
-                color: {
-                    dark: '#000000',
-                    light: '#FFFFFF'
-                }
-            }, function (error) {
-                if (error) {
-                    console.error('QR generation failed:', error);
-                    createFallbackQR();
-                } else {
-                    console.log('QR code generated successfully!');
-                }
-            });
+            try {
+                QRCode.toCanvas(canvas, qrData, {
+                    width: 200,
+                    height: 200,
+                    margin: 2,
+                    color: {
+                        dark: '#000000',
+                        light: '#FFFFFF'
+                    }
+                }, function (error) {
+                    if (error) {
+                        console.error('QR generation failed:', error);
+                        createFallbackQR();
+                    } else {
+                        console.log('QR code generated successfully!');
+                    }
+                });
+            } catch (error) {
+                console.error('QR code error:', error);
+                createFallbackQR();
+            }
+        } else if (retries < 20) {
+            // Library not ready yet, wait and try again
+            setTimeout(() => attemptQRGeneration(retries + 1), 250);
         } else {
-            // Library not loaded - show fallback
-            console.log('QRCode library not available, showing fallback');
+            // Library failed to load after retries - show fallback
+            console.log('QRCode library not available after retries, showing fallback');
             createFallbackQR();
         }
-    }, 500);
+    }
+    
+    // Start attempting QR generation
+    attemptQRGeneration();
     
     function createFallbackQR() {
         const ctx = canvas.getContext('2d');

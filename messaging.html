@@ -9,14 +9,26 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://apis.google.com/js/api.js"></script>
     <!-- QR Code Library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script>
-        // Ensure QRCode is available globally
-        window.QRCodeReady = false;
-        if (typeof QRCode !== 'undefined') {
-            window.QRCodeReady = true;
-            console.log('QRCode library loaded successfully');
+        // Load QR code library and set flag when ready
+        window.QRCodeLibraryLoaded = false;
+        
+        function loadQRLibrary() {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+            script.onload = function() {
+                window.QRCodeLibraryLoaded = true;
+                console.log('QRCode library loaded successfully');
+            };
+            script.onerror = function() {
+                console.log('QRCode library failed to load');
+                window.QRCodeLibraryLoaded = false;
+            };
+            document.head.appendChild(script);
         }
+        
+        // Load the library
+        loadQRLibrary();
     </script>
     <style>
         .messaging-container {
