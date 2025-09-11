@@ -9,7 +9,15 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://apis.google.com/js/api.js"></script>
     <!-- QR Code Library -->
-    <script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        // Ensure QRCode is available globally
+        window.QRCodeReady = false;
+        if (typeof QRCode !== 'undefined') {
+            window.QRCodeReady = true;
+            console.log('QRCode library loaded successfully');
+        }
+    </script>
     <style>
         .messaging-container {
             max-width: 1200px;

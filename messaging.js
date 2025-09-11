@@ -848,7 +848,7 @@ function showQRCode() {
     
     // Wait a moment for library to load, then generate
     setTimeout(() => {
-        if (typeof QRCode !== 'undefined') {
+        if (typeof QRCode !== 'undefined' || window.QRCodeReady) {
             // Library loaded successfully - generate real QR code
             QRCode.toCanvas(canvas, qrData, {
                 width: 200,
