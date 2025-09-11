@@ -878,41 +878,62 @@ function showQRCode() {
             if (typeof qrcode !== 'undefined') {
                 // Using qrcode-generator library (different API)
                 try {
+                    console.log('Trying qrcode-generator library...');
                     const qr = qrcode(0, 'M');
                     qr.addData(qrData);
                     qr.make();
                     
-                    // Draw QR code on canvas
-                    const modules = qr.modules;
-                    const size = modules.length;
-                    const cellSize = 160 / size;
-                    const offset = 20;
+                    console.log('QR object created:', qr);
                     
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 200;
-                    canvas.height = 200;
-                    
-                    // White background
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(0, 0, 200, 200);
-                    
-                    // Draw QR modules
-                    ctx.fillStyle = '#000000';
-                    for (let row = 0; row < size; row++) {
-                        for (let col = 0; col < size; col++) {
-                            if (modules[row][col]) {
-                                ctx.fillRect(
-                                    offset + col * cellSize,
-                                    offset + row * cellSize,
-                                    cellSize,
-                                    cellSize
-                                );
-                            }
-                        }
+                    // Try different ways to access the modules
+                    let modules = null;
+                    if (qr.modules) {
+                        modules = qr.modules;
+                    } else if (qr.getModules) {
+                        modules = qr.getModules();
+                    } else if (qr.qrcode && qr.qrcode.modules) {
+                        modules = qr.qrcode.modules;
                     }
                     
-                    console.log('QR code generated successfully with qrcode-generator library!');
-                    return;
+                    if (modules && modules.length > 0) {
+                        const size = modules.length;
+                        const cellSize = 160 / size;
+                        const offset = 20;
+                        
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = 200;
+                        canvas.height = 200;
+                        
+                        // White background
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, 200, 200);
+                        
+                        // Draw QR modules
+                        ctx.fillStyle = '#000000';
+                        for (let row = 0; row < size; row++) {
+                            for (let col = 0; col < size; col++) {
+                                if (modules[row][col]) {
+                                    ctx.fillRect(
+                                        offset + col * cellSize,
+                                        offset + row * cellSize,
+                                        cellSize,
+                                        cellSize
+                                    );
+                                }
+                            }
+                        }
+                        
+                        console.log('QR code generated successfully with qrcode-generator library!');
+                        return;
+                    } else {
+                        console.log('Could not access modules, trying createImgTag method...');
+                        // Try alternative method - create as HTML and extract data
+                        const imgTag = qr.createImgTag(2, 8);
+                        console.log('Image tag method result:', imgTag);
+                        
+                        // If that doesn't work, fallback to simple pattern
+                        throw new Error('Modules not accessible');
+                    }
                 } catch (error) {
                     console.error('qrcode-generator library error:', error);
                 }
